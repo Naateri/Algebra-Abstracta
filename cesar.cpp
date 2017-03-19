@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include "maths.h"
 using namespace std;
 //Cifrado de Cesar
 class Cesar{
@@ -27,10 +28,12 @@ public:
 					msj = "Error.\n";
 					return msj;
 			}
-			if (found+key > alfabeto.length()){
-				found -= 26; 
-			}
-			cifrado += alfabeto[found+key];
+			/*if (found+key > alfabeto.length()){
+				//found -= alfabeto.length()
+				found = modulo(found, alfabeto.length());
+			}*/
+			found = modulo(found+key, alfabeto.length());
+			cifrado += alfabeto[found];
 			
 		}
 		return cifrado;
@@ -50,10 +53,12 @@ public:
 				cifrado = "Error.\n";
 				return cifrado;
 			} 
-			if (found-key < 0){
-				found += 26;
-			}
-			descifrado += alfabeto[found-key];
+			/*if (found-key < 0){
+				//found += alfabeto.length();
+				found = modulo(found, alfabeto.length());
+			}*/
+			found = modulo(found-key, alfabeto.length());
+			descifrado += alfabeto[found];
 		}
 		return descifrado;
 	}
@@ -85,4 +90,3 @@ int main() {
 	acciones();
 	return 0;
 }
-
