@@ -4,6 +4,7 @@
 #include "maths.h"
 using namespace std;
 //Cifrado de Cesar
+//Clave ingresada por el usuario
 class Cesar{
 private:
 	string alfabeto;
@@ -13,7 +14,7 @@ private:
 	}
 public:
 	Cesar(){
-		this -> alfabeto = "abcdefghijklmnopqrstuvwxyz";
+		this -> alfabeto = "abcdefghijklmnopqrstuvwxyz ";
 		this -> key = generarClaves();
 	}
 	string cifrar(string msj){
@@ -21,22 +22,10 @@ public:
 		string cifrado, letra;// = "";
 		for (i; i<msj.length(); i++){
 			letra = msj[i];
-			if (letra == " "){
-				cifrado += " ";
-				continue;
-			}
 			found = alfabeto.find(letra);
 			//cout << found << endl;
-			if (found > alfabeto.length()){
-				cout << "Error. Letra no encontrada.\n";
-				msj = "Error.\n";
-				return msj;
-			}
-			/*if (found+key > alfabeto.length()){
-				//found -= alfabeto.length()
+			if (found+key > alfabeto.length())
 				found = modulo(found, alfabeto.length());
-			}*/
-			found = modulo(found+key, alfabeto.length());
 			cifrado += alfabeto[found];
 			
 		}
@@ -47,31 +36,21 @@ public:
 		string descifrado, letra;
 		for (i; i<cifrado.length(); i++){
 			letra = cifrado[i];
-			if (letra == " "){
-				descifrado += " ";
-				continue;
-			}
 			found = alfabeto.find(letra);
-			if (found > alfabeto.length()){
-				cout << "Error. Letra no encontrada.\n";
-				cifrado = "Error.\n";
-				return cifrado;
-			} 
-			/*if (found-key < 0){
-				//found += alfabeto.length();
+			if (found-key < 0){
 				found = modulo(found, alfabeto.length());
-			}*/
-			found = modulo(found-key, alfabeto.length());
+			}
 			descifrado += alfabeto[found];
 		}
 		return descifrado;
 	}
 	int getKey() {return this->key;}
-	
+	void setKey(int k) {this->key = k;}
 	
 };
 void acciones(){
 	string mensaje = "1", cifrado, descifrado;
+	int key;
 	while(mensaje != "0"){
 		cout << "Ingrese su mensaje (0 para salir): ";
 		getline(cin, mensaje);
@@ -79,6 +58,8 @@ void acciones(){
 			break;*/
 		cout << "Mensaje original: " << mensaje << endl;
 		Cesar Algoritmo;
+		cout << "Ingrese clave: ";
+		cin >> key;
 		cifrado = Algoritmo.cifrar(mensaje);
 		cout << "Clave: " << Algoritmo.getKey() << endl;
 		cout << "Mensaje cifrado: " << cifrado << endl;
