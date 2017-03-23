@@ -71,8 +71,8 @@ public:
 	
 };
 void acciones(){
-	string mensaje, cifrado, descifrado;
-	do{
+	string mensaje = "1", cifrado, descifrado;
+	while(mensaje != "0"){
 		cout << "Ingrese su mensaje (0 para salir): ";
 		getline(cin, mensaje);
 		/*if (mensaje == "0")
@@ -85,7 +85,8 @@ void acciones(){
 		descifrado = Algoritmo.descifrar(cifrado);
 		cout << "Mensaje descifrado: " << descifrado << endl;
 		mensaje = "";
-	}while(mensaje!="0");
+	}
+	cout << "Hasta luego!\n";
 }
 	
 int main() {
