@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <stdlib.h>
 #include "maths.h"
 using namespace std;
 //Cifrado de Cesar
@@ -7,10 +8,13 @@ class Cesar{
 private:
 	string alfabeto;
 	int key;
+	int generarClaves(){
+		return rand() % 10 + 1;
+	}
 public:
 	Cesar(){
-		alfabeto = "abcdefghijklmnopqrstuvwxyz";
-		key = 3;
+		this -> alfabeto = "abcdefghijklmnopqrstuvwxyz";
+		this -> key = generarClaves();
 	}
 	string cifrar(string msj){
 		int i = 0, found;
@@ -24,9 +28,9 @@ public:
 			found = alfabeto.find(letra);
 			//cout << found << endl;
 			if (found > alfabeto.length()){
-					cout << "Error. Letra no encontrada.\n";
-					msj = "Error.\n";
-					return msj;
+				cout << "Error. Letra no encontrada.\n";
+				msj = "Error.\n";
+				return msj;
 			}
 			/*if (found+key > alfabeto.length()){
 				//found -= alfabeto.length()
@@ -62,31 +66,30 @@ public:
 		}
 		return descifrado;
 	}
-	int generarClaves(){
-		;
-	}
+	int getKey() {return this->key;}
 	
 	
 };
-
 void acciones(){
 	string mensaje, cifrado, descifrado;
-	while(1){
+	do{
 		cout << "Ingrese su mensaje (0 para salir): ";
 		getline(cin, mensaje);
-		if (mensaje == "0")
-			break;
+		/*if (mensaje == "0")
+			break;*/
 		cout << "Mensaje original: " << mensaje << endl;
 		Cesar Algoritmo;
 		cifrado = Algoritmo.cifrar(mensaje);
+		cout << "Clave: " << Algoritmo.getKey() << endl;
 		cout << "Mensaje cifrado: " << cifrado << endl;
 		descifrado = Algoritmo.descifrar(cifrado);
 		cout << "Mensaje descifrado: " << descifrado << endl;
 		mensaje = "";
-	}
+	}while(mensaje!="0");
 }
 	
 int main() {
 	acciones();
 	return 0;
 }
+
