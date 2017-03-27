@@ -21,17 +21,12 @@ public:
 		int i = 0, found;
 		string cifrado, letra;// = "";
 		for (i; i<msj.length(); i++){
-			letra = msj[i];
-			found = alfabeto.find(letra);
-			if (found > alfabeto.find('z')){
-				cifrado += alfabeto[found]; //arreglar estoooo
-				continue;
-			}
+			letra = msj[i]; //letra del mensaje original
+			found = alfabeto.find(letra); //letra encontrada en el alfabeto
 			found += this->key;
-			if (found > alfabeto.length() - 1)
-				found = modulo(found, alfabeto.length() - 1);
-			cifrado += alfabeto[found];
-			
+			if (found > alfabeto.length())
+				found = modulo(found, alfabeto.length());
+			cifrado += this->alfabeto[found];
 		}
 		return cifrado;
 	}
@@ -39,17 +34,12 @@ public:
 		int i = 0, found;
 		string descifrado, letra;
 		for (i; i<cifrado.length(); i++){
-			letra = cifrado[i];
-			found = alfabeto.find(letra);
-			if (found > alfabeto.find('z')){
-				descifrado += alfabeto[found]; //arreglar estooooooooo
-				continue;
-			}
+			letra = cifrado[i]; //letra en el mensaje cifrado
+			found = alfabeto.find(letra); //letra encontrada en el alfabeto
 			found -= this->key;
-			if (found< 0){
-				found = modulo(found, alfabeto.length()-1);
-			}
-			descifrado += alfabeto[found];
+			if (found< 0)
+				found = modulo(found, alfabeto.length());
+			descifrado += this->alfabeto[found];
 		}
 		return descifrado;
 	}
@@ -60,12 +50,11 @@ public:
 void acciones(){
 	string mensaje, cifrado, descifrado;
 	int key;
-	cin >> key;
-	while(mensaje != "0"){
-		cout << "Ingrese su mensaje (0 para salir): ";
+	//while(mensaje != "0"){
+		cout << "Ingrese su mensaje: ";
 		getline(cin, mensaje);
-		/*cout << "Ingrese clave: ";
-		cin >> key;*/
+		cout << "Ingrese clave: ";
+		cin >> key;
 		cout << "Mensaje original: " << mensaje << endl;
 		Cesar Algoritmo(key);
 		//Algoritmo.setKey(key);
@@ -74,9 +63,7 @@ void acciones(){
 		cout << "Mensaje cifrado: " << cifrado << endl;
 		descifrado = Algoritmo.descifrar(cifrado);
 		cout << "Mensaje descifrado: " << descifrado << endl;
-		//key = 0;
-	}
-	cout << "Hasta luego!\n";
+	//}
 }
 	
 int main() {
