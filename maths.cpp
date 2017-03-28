@@ -22,6 +22,21 @@ int mcd(int a, int b){ //mcd iterativo
 	return b;
 }
 
-/*int main(){
-	
-}*/
+vector<int> mcdExtendido(int a, int b){
+	int r, r1 = a, r2 = b, x, x1 = 1, x2 = 0, y, y1 = 0, y2 = 1;
+	while (r2 > 0){
+		q = r1/r2; //EUCLIDES
+		r = r1 - q*r2; //EUCLIDES
+		r1 = r2; r2 = r; //EUCLIDES (como borrar?)
+		x = x1 - q*x2;
+		x1 = x2; x2 = x;
+		y = y1 - q * y2;
+		y1 = y2; y2 = y;
+	}
+	vector<int> resultados;
+	resultados.push_back(x); //resultados.at(0) = x
+	resultados.push_back(y); //resultados.at(1) = y
+	resultados.push_back(r1); //resultados.at(2) = mcd(a,b)
+	return resultados;
+}
+
