@@ -5,7 +5,7 @@
 #include <vector>
 int modulo(int a, int n);
 int mcd(int a, int b);
-vector<int> euclidesExtendido(int a, int b);
+std::vector<int> mcdExtendido(int a, int b);
 #endif 
 
 

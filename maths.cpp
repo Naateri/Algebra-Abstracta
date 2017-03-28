@@ -1,6 +1,7 @@
 //maths.cpp
 //algebra abstracta
 #include "maths.h"
+#include <vector>
 int modulo(int a, int n){
 	int q, r;
 	q = a/n;
@@ -22,8 +23,8 @@ int mcd(int a, int b){ //mcd iterativo
 	return b;
 }
 
-vector<int> mcdExtendido(int a, int b){
-	int r, r1 = a, r2 = b, x, x1 = 1, x2 = 0, y, y1 = 0, y2 = 1;
+std::vector<int> mcdExtendido(int a, int b){
+	int r, r1 = a, r2 = b, x, x1 = 1, x2 = 0, y, y1 = 0, y2 = 1, q;
 	while (r2 > 0){
 		q = r1/r2; //EUCLIDES
 		r = r1 - q*r2; //EUCLIDES
@@ -33,7 +34,7 @@ vector<int> mcdExtendido(int a, int b){
 		y = y1 - q * y2;
 		y1 = y2; y2 = y;
 	}
-	vector<int> resultados;
+	std::vector<int> resultados;
 	resultados.push_back(x); //resultados.at(0) = x
 	resultados.push_back(y); //resultados.at(1) = y
 	resultados.push_back(r1); //resultados.at(2) = mcd(a,b)
