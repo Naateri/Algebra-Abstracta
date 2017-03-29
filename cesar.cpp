@@ -15,7 +15,7 @@ string Cesar::cifrar(string msj){
 		letra = msj[i]; //letra del mensaje original
 		found = alfabeto.find(letra); //letra encontrada en el alfabeto
 		found += this->key;
-		if (found > alfabeto.length())
+		if (found >= alfabeto.length())
 			found = modulo(found, alfabeto.length());
 		cifrado += this->alfabeto[found];
 	}
