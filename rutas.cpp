@@ -21,24 +21,34 @@ Rutas::Rutas(int k){
 	this->key = k;
 }
 string Rutas::cifrar(string msj){
-	string messages[key]; //para guardar los mensajes
+	string messages[this->key]; //para guardar los mensajes
 	string cifrado;
 	bool sube; //para ver si sube
 	int i = 0, j = 0, k;
 	while(i < msj.length()){
 		k = this->key;
-		if (j >= this->key)
+		cout << "Key: " << k << endl;
+		if (j >= k) 
 			sube = true;
+		else sube = false;
 		//messages[j] += msj[i];
-		for(k-1; k > 0; k--){ //not always the same number of loops
-			messages[j] += msj[i];			
-			if (sube)
+		for(k; k > 0; k--){ //not always the same number of loops
+			//messages[j] += msj[i];
+			cout << j << endl;			
+			if (sube){ //booleano que debe mantenerse igual por k iteraciones
+				messages[j] += msj[i];				
 				j--;
-			else j++;
-			cout << j;
+			}
+			else{
+				messages[j] += msj[i];
+				j++;
+			}
 			i++;
 		}
 	}
+	for (i = 0; i<this->key; i++)
+		cifrado += messages[i];
+	return cifrado;
 }
 string Rutas::descifrar(string cifrado){
 	string messages[key];
