@@ -57,7 +57,7 @@ string Rutas::cifrar(string msj){
 		}
 		//DEBUGGING cout << "j una vez fuera del for: " << j << endl;
 	}
-	while (j > 0 && j < this->key){ //llenando de X's
+	while (j > 0 && j < this->key - 1){ //llenando de X's
 		if (sube){
 			j--;
 			messages[j] += "X";
