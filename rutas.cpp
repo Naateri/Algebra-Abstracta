@@ -46,7 +46,7 @@ string Rutas::cifrar(string msj){
 				messages[j] += msj[i];
 				j++;
 			}
-			cout << "j: " << j << endl;
+			//DEBUGGING cout << "j: " << j << endl;
 			i++;
 			k--;
 		}
@@ -71,16 +71,27 @@ string Rutas::cifrar(string msj){
 		cifrado += messages[i];
 	return cifrado;
 }
-string Rutas::descifrar(string cifrado){
+string Rutas::descifrar(string cifrado){ //funciona hasta que da más de una 'vuelta'
 	string messages[this->key]; //para guardar los mensajes
 	string descifrado, part; //guarda el descifrado
 	int i = 0, j = 0, sizeofpart, k = 0;
 	sizeofpart = cifrado.size()/this->key;
-	j = sizeofpart-1;
+	j = sizeofpart+1;
 	while(i<cifrado.size()){ //ordenando en los arrays
+		part.clear();		
 		if (sizeofpart == 1){ //loop cumple su funcion
 			j = sizeofpart+1;
-			part.clear();
+			while(j>0 && i<cifrado.size()){
+				part += cifrado[i];
+				j--;
+				i++;
+			}
+			messages[k] = part;
+			k++;
+		} else { //guarda bien los mensajes
+			if (i < sizeofpart)
+				j = sizeofpart;
+			else j = sizeofpart+1;	
 			while(j>0 && i<cifrado.size()){
 				part += cifrado[i];
 				j--;
@@ -91,7 +102,7 @@ string Rutas::descifrar(string cifrado){
 		}
 	}
 	i = 0; j = 0; k = 0;
-	while(i<cifrado.size()){ //infinite loop?
+	while(i<cifrado.size()){
 		bool regresa;
 		//cout << "j: " << j << endl;
 		if (j >= this->key){
@@ -100,8 +111,10 @@ string Rutas::descifrar(string cifrado){
 			cout << "j: " << j << endl;
 		}
 		else regresa = false;
-		while(j < this->key && j >= 0 && i < cifrado.size()){
-			cout << "j: " << j << endl;
+		while(j < this->key && j >= 0 && i < cifrado.size()){ //j>0 no sale del loop j>=0 bad_alloc
+			cout << "entering loop, j: " << j << endl;
+			if (j == 0)
+				regresa = false;
 			part = messages[j][k]; //j = celda, k = posicion en la palabra
 			if (regresa){
 				j--;
@@ -122,11 +135,6 @@ string Rutas::descifrar(string cifrado){
 		}
 		k++;
 	}
-	/*for(i = 0; i<key; i++){
-		if (messages[i] == "X")
-			continue;
-		descifrado += messages[i];
-	}*/
 	return descifrado;
 }
 int Rutas::getKey() {return this->key;}
