@@ -8,7 +8,7 @@ h     m     X
    a     s
 Mensaje cifrado: 
 hmXoooalcetas
-Mensaje cifrado:
+Mensaje descifrado:
 holacomoesta
 */
 #include <iostream>
@@ -26,9 +26,8 @@ string Rutas::cifrar(string msj){
 	bool sube; //para ver si sube
 	int i = 0, j = 0, k;
 	while(i < msj.length()){
-		k = this->key -1;		
-		cout << "Key - 1: " << k << endl;
-		if (i == 0){	//primer paso
+		k = this->key -1;
+		if (i == 0){//primer paso
 			messages[j] += msj[i];
 			i++;
 			j++;
@@ -37,37 +36,46 @@ string Rutas::cifrar(string msj){
 		if (j >= k) 
 			sube = true;
 		else sube = false;
-		for(k; k > 0; k--){ //not always the same number of loops
-			//messages[j] += msj[i];
-			cout << "k: " << k << endl;			
+		cout << "New for loop\n";
+		while(k > 0 && i < msj.size()){ //i < msj.size() por si no llena la 'matriz' 			
 			if (sube){ //booleano que debe mantenerse igual por k iteraciones				
 				j--;
 				messages[j] += msj[i];
-				cout << "j: " << j << endl;
 			}
 			else{
 				messages[j] += msj[i];
 				j++;
-				cout << "j: " << j << endl;
 			}
+			cout << "j: " << j << endl;
 			i++;
+			k--;
 		}
-		if (!sube)
+		if (i < msj.size()){ //porque puede que i ya sea igual al tamaño de msj
+			if (sube) //para que no se repita el dato en messages[j]
+				j++;
+			else j--;
+		}
+		cout << "j una vez fuera del for: " << j << endl;
+	}
+	while (j > 0 && j < this->key){ //llenando de X's
+		if (sube){
 			j--;
+			messages[j] += "X";
+		}
+		else {
+			j++;
+			messages[j] += "X";
+		}
 	}
 	for (i = 0; i<this->key; i++)
 		cifrado += messages[i];
 	return cifrado;
 }
 string Rutas::descifrar(string cifrado){
-	string messages[key];
-	string descifrado;
-	int i = 0, j = 0;
-	for(i, j; i < cifrado.length(); i++, j++){
-		if (j>=key)
-			j--;
-		messages[j] += cifrado[i];
-	}
+	string messages[this->key]; //para guardar los mensajes
+	string descifrado; //guarda el descifrado
+	int i = 0, j = 0, k;
+	
 	for(i = 0; i<key; i++)
 		descifrado += messages[i];
 	return descifrado;
