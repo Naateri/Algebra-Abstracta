@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <stdlib.h> //rand
+#include <time.h>
 #include "afin.h"
 #include "maths.h"
 
@@ -12,14 +13,15 @@ using namespace std;
 void Afin::generarClaves(){
 	int alt, a = 0, n;
 	n = this->alfabeto.length();
+	srand (time(NULL));
 	while (a != 1){
 		cout << "a: " << a << endl;
-		alt = (rand() % n + 1) - 1; //random que va de 0 a la longitud del alfabeto
+		alt = rand() % n ; //random que va de 0 a la longitud del alfabeto
 		cout << "random: " << alt << endl;
 		a = mcd(alt, n);
 	}
 	this->a = alt;
-	this->b = rand() % alfabeto.size() + 1;
+	this->b = rand() % 100;
 	cout << "inversa de a: " << inversa(a, alfabeto.size()) << endl;
 }
 
