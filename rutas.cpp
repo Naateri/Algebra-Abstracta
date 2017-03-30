@@ -36,7 +36,7 @@ string Rutas::cifrar(string msj){
 		if (j >= k) 
 			sube = true;
 		else sube = false;
-		cout << "New for loop\n";
+		//DEBUGGING cout << "New for loop\n";
 		while(k > 0 && i < msj.size()){ //i < msj.size() por si no llena la 'matriz' 			
 			if (sube){ //booleano que debe mantenerse igual por k iteraciones				
 				j--;
@@ -55,7 +55,7 @@ string Rutas::cifrar(string msj){
 				j++;
 			else j--;
 		}
-		cout << "j una vez fuera del for: " << j << endl;
+		//DEBUGGING cout << "j una vez fuera del for: " << j << endl;
 	}
 	while (j > 0 && j < this->key){ //llenando de X's
 		if (sube){
