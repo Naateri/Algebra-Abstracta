@@ -73,11 +73,60 @@ string Rutas::cifrar(string msj){
 }
 string Rutas::descifrar(string cifrado){
 	string messages[this->key]; //para guardar los mensajes
-	string descifrado; //guarda el descifrado
-	int i = 0, j = 0, k;
-	
-	for(i = 0; i<key; i++)
+	string descifrado, part; //guarda el descifrado
+	int i = 0, j = 0, sizeofpart, k = 0;
+	sizeofpart = cifrado.size()/this->key;
+	j = sizeofpart-1;
+	while(i<cifrado.size()){ //ordenando en los arrays
+		if (sizeofpart == 1){ //loop cumple su funcion
+			j = sizeofpart+1;
+			part.clear();
+			while(j>0 && i<cifrado.size()){
+				part += cifrado[i];
+				j--;
+				i++;
+			}
+			messages[k] = part;
+			k++;
+		}
+	}
+	i = 0; j = 0; k = 0;
+	while(i<cifrado.size()){ //infinite loop?
+		bool regresa;
+		//cout << "j: " << j << endl;
+		if (j >= this->key){
+			regresa = true;
+			j--;
+			cout << "j: " << j << endl;
+		}
+		else regresa = false;
+		while(j < this->key && j >= 0 && i < cifrado.size()){
+			cout << "j: " << j << endl;
+			part = messages[j][k]; //j = celda, k = posicion en la palabra
+			if (regresa){
+				j--;
+				part = messages[j];
+				cout << "guardado en la parte " << j << ": " << part << endl;
+				descifrado += part[k];
+				i++;
+			} else {
+				part = messages[j];
+				cout << "guardado en la parte " << j << ": " << part << endl;		
+				descifrado += part[k];
+				j++; i++;
+			}
+			if (part == "X"){ //omitir las X
+				descifrado.erase(i); //borra la última que haya metido
+			}
+			cout << "descifrado por ahora: " << descifrado << endl;
+		}
+		k++;
+	}
+	/*for(i = 0; i<key; i++){
+		if (messages[i] == "X")
+			continue;
 		descifrado += messages[i];
+	}*/
 	return descifrado;
 }
 int Rutas::getKey() {return this->key;}
