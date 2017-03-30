@@ -1,5 +1,6 @@
 //maths.cpp
 //algebra abstracta
+#include <iostream>
 #include "maths.h"
 #include <utility>
 using namespace std;
@@ -30,7 +31,7 @@ int mcd(int a, int b){ //mcd iterativo
 		a = b;
 		b = r;
 	}
-	return b;
+	return a;
 }
 
 pair<int, int> mcdExtendido(int a, int b){
@@ -52,4 +53,12 @@ pair<int, int> mcdExtendido(int a, int b){
 	pair<int, int> resultados(x,y); //resultados.first = x
 	return resultados; //resultados.second = y
 }
-
+int inversa(int a, int n){
+	int x;
+	x = mcdExtendido(a, n).first;
+	cout << "x: " << x << endl;
+	if (x < 0)
+		modulo(x, n);
+	//DEBUGGINGcout << "new x: " << x << endl;
+	return x;
+}
