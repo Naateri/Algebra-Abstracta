@@ -4,7 +4,7 @@
 #include <time.h>
 #include "afin.h"
 #include "maths.h"
-
+//trabajo 30-03-2017
 //f(c) = M*a + modulo(b, alfabeto.length());
 //f(d) = M*(inverso a) - modulo(b, alfabeto.length());
 
