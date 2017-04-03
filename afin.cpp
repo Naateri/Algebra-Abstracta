@@ -18,11 +18,12 @@ void Afin::generarClaves(){
 		cout << "a: " << a << endl;
 		alt = rand() % n ; //random que va de 0 a la longitud del alfabeto
 		cout << "random: " << alt << endl;
-		a = mcd(alt, n);
+		a = mcd(n, alt);
 	}
+	cout << "valor final de a: " << alt << endl;
 	this->a = alt;
 	this->b = rand() % 100;
-	cout << "inversa de a: " << inversa(a, alfabeto.size()) << endl;
+	cout << "inversa de a: " << inversa(n, alt) << endl;
 }
 
 Afin::Afin(){
@@ -36,9 +37,9 @@ string Afin::cifrar(string msj){
 	for(i = 0; i < msj.size(); i++){
 		letra = msj[i];
 		found = this->alfabeto.find(letra);
-		result = (found * this->a) + modulo(this->b, this->alfabeto.size()); //f(c)
+		result = (found * this->a) + this->b; //f(c)
 		if (result > this->alfabeto.size())
-			result = modulo(result, alfabeto.size());
+			result = modulo(result, this->alfabeto.size());
 		cifrado+=alfabeto[result];
 	}
 	return cifrado;
@@ -51,7 +52,7 @@ string Afin::descifrar(string msj){
 		letra = msj[i];
 		found = this->alfabeto.find(letra);
 		inverso = inversa(this->a, this->alfabeto.size());
-		result = (found * inverso) - modulo(this->b, this->alfabeto.size()); //f(d)
+		result = (found * inverso) - this->b; //f(d)
 		if (result > this->alfabeto.size() || result < 0)
 			result = modulo(result, alfabeto.size());
 		descifrado += alfabeto[result];
