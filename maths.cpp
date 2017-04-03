@@ -5,7 +5,7 @@
 #include <utility>
 using namespace std;
 
-int modulo(int a, int n){
+int modulo(int a, int n){ //a mod n
 	int q, r;
 	q = a/n;
 	r = a - (q*n);
@@ -46,19 +46,21 @@ pair<int, int> mcdExtendido(int a, int b){
 		x = x1 - q*x2;
 		x1 = x2; 
 		x2 = x;
+		cout << "(ALG EXTENDIDO) x: " << x << endl;
 		y = y1 - q * y2;
 		y1 = y2; 
 		y2 = y;
 	}
+	cout << "fin alg extendido\n";
 	pair<int, int> resultados(x,y); //resultados.first = x
 	return resultados; //resultados.second = y
 }
 int inversa(int a, int n){
 	int x;
-	x = mcdExtendido(a, n).first;
+	x = mcdExtendido(n, a).first;
 	cout << "x: " << x << endl;
 	if (x < 0)
-		modulo(x, n);
-	//DEBUGGINGcout << "new x: " << x << endl;
+		x = modulo(x, n);
+	cout << "new x: " << x << endl;
 	return x;
 }
