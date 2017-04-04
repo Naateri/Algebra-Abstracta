@@ -36,8 +36,7 @@ string Rutas::cifrar(string msj){
 		if (j >= k) 
 			sube = true;
 		else sube = false;
-		//DEBUGGING cout << "New for loop\n";
-		while(k > 0 && i < msj.size()){ //i < msj.size() por si no llena la 'matriz' 			
+		while(k > 0 && i < msj.size()){ //i < msj.size() por si no llena la 'matriz'		
 			if (sube){ //booleano que debe mantenerse igual por k iteraciones				
 				j--;
 				messages[j] += msj[i];
@@ -55,17 +54,13 @@ string Rutas::cifrar(string msj){
 				j++;
 			else j--;
 		}
-		//DEBUGGING cout << "j una vez fuera del for: " << j << endl;
 	}
 	while (j > 0 && j < this->key - 1){ //llenando de X's
-		if (sube){
+		if (sube)
 			j--;
-			messages[j] += "X";
-		}
-		else {
+		else
 			j++;
-			messages[j] += "X";
-		}
+		messages[j] += "X";
 	}
 	for (i = 0; i<this->key; i++)
 		cifrado += messages[i];
@@ -74,8 +69,9 @@ string Rutas::cifrar(string msj){
 string Rutas::descifrar(string cifrado){ //funciona hasta que da más de una 'vuelta'
 	string messages[this->key]; //para guardar los mensajes
 	string descifrado, part; //guarda el descifrado
+	char partComparison;
 	int i = 0, j = 0, sizeofpart, k = 0;
-	sizeofpart = cifrado.size()/this->key;
+	sizeofpart = cifrado.size()/this->key; //2 casos: si es 1 o si no es 1
 	j = sizeofpart+1;
 	while(i<cifrado.size()){ //ordenando en los arrays
 		part.clear();		
@@ -88,7 +84,7 @@ string Rutas::descifrar(string cifrado){ //funciona hasta que da más de una 'vu
 			}
 			messages[k] = part;
 			k++;
-		} else { //guarda bien los mensajes
+		} else { //guarda el mensaje por partes en el array 
 			if (i < sizeofpart)
 				j = sizeofpart;
 			else j = sizeofpart+1;	
@@ -100,11 +96,10 @@ string Rutas::descifrar(string cifrado){ //funciona hasta que da más de una 'vu
 			messages[k] = part;
 			k++;
 		}
-	}
+	} //end while
 	i = 0; j = 0; k = 0;
 	while(i<cifrado.size()){
 		bool regresa;
-		//cout << "j: " << j << endl;
 		if (j >= this->key){
 			regresa = true;
 			j--;
@@ -113,24 +108,25 @@ string Rutas::descifrar(string cifrado){ //funciona hasta que da más de una 'vu
 		else regresa = false;
 		while(j < this->key && j >= 0 && i < cifrado.size()){ //j>0 no sale del loop j>=0 bad_alloc
 			cout << "entering loop, j: " << j << endl;
-			if (j == 0)
+			cout << "valor de k: " << k << endl;
+			if (j < 1)
 				regresa = false;
-			part = messages[j][k]; //j = celda, k = posicion en la palabra
+			//j = celda, k = posicion en la palabra
 			if (regresa){
 				j--;
 				part = messages[j];
 				cout << "guardado en la parte " << j << ": " << part << endl;
 				descifrado += part[k];
-				i++;
 			} else {
 				part = messages[j];
 				cout << "guardado en la parte " << j << ": " << part << endl;		
 				descifrado += part[k];
-				j++; i++;
+				j++;
 			}
-			if (part == "X"){ //omitir las X
-				descifrado.erase(i); //borra la última que haya metido
-			}
+			i++;
+			partComparison = part[k];
+			if (partComparison == 'X') //omitir las X
+				descifrado.erase(descifrado.end()); //borra la última que haya metido
 			cout << "descifrado por ahora: " << descifrado << endl;
 		}
 		k++;
