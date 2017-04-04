@@ -50,6 +50,7 @@ pair<int, int> mcdExtendido(int a, int b){
 		y = y1 - q * y2;
 		y1 = y2; 
 		y2 = y;
+		cout << "1 = " << a << "(" << x << ") + " << b << "(" << y << ")\n";
 	}
 	cout << "fin alg extendido\n";
 	pair<int, int> resultados(x,y); //resultados.first = x

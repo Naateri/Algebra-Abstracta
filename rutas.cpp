@@ -45,7 +45,6 @@ string Rutas::cifrar(string msj){
 				messages[j] += msj[i];
 				j++;
 			}
-			//DEBUGGING cout << "j: " << j << endl;
 			i++;
 			k--;
 		}
@@ -109,7 +108,7 @@ string Rutas::descifrar(string cifrado){ //funciona hasta que da más de una 'vu
 		while(j < this->key && j >= 0 && i < cifrado.size()){ //j>0 no sale del loop j>=0 bad_alloc
 			cout << "entering loop, j: " << j << endl;
 			cout << "valor de k: " << k << endl;
-			if (j < 1)
+			if (j == 0)
 				regresa = false;
 			//j = celda, k = posicion en la palabra
 			if (regresa){
@@ -126,7 +125,7 @@ string Rutas::descifrar(string cifrado){ //funciona hasta que da más de una 'vu
 			i++;
 			partComparison = part[k];
 			if (partComparison == 'X') //omitir las X
-				descifrado.erase(descifrado.end()); //borra la última que haya metido
+				descifrado.erase(descifrado.end()-1); //borra la última que haya metido
 			cout << "descifrado por ahora: " << descifrado << endl;
 		}
 		k++;
