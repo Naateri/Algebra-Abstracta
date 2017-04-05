@@ -7,7 +7,6 @@ using namespace std;
 
 int main () {
 	string msj, cifrado, descifrado;
-	int keyA, keyB;
 	cout << "Ingrese su mensaje: ";
 	getline(cin, msj);
 	Afin Algoritmo;
