@@ -19,7 +19,7 @@ pair<int, int> moduloQandR(int a, int n){
 	q = a/n;
 	r = a - (q*n);
 	if (r<0)
-		r+=n;
+		;//r+=n;
 	pair<int, int> values(r, q);
 	return values;
 }
@@ -41,13 +41,15 @@ pair<int, int> mcdExtendido(int a, int b){
 		modulo = moduloQandR(r1, r2);
 		q = modulo.second; //EUCLIDES
 		r = modulo.first; //EUCLIDES
+		cout << q << " = " << r1 << " - " << "(" << r1 << "/" << r2 << ") * " << r2 << endl;
 		r1 = r2;
 		r2 = r; 
 		x = x1 - q*x2;
 		x1 = x2; 
 		x2 = x;
 		cout << "(ALG EXTENDIDO) x: " << x << endl;
-		y = y1 - q * y2;
+		cout << "(ALG EXTENDIDO) y1, y2: " << y1 << ", " << y2 << endl;
+		y = y1 - q*y2;
 		y1 = y2; 
 		y2 = y;
 		cout << "1 = " << a << "(" << x << ") + " << b << "(" << y << ")\n";

@@ -16,7 +16,7 @@ void Afin::generarClaves(){
 	srand (time(NULL));
 	while (a != 1){
 		cout << "a: " << a << endl;
-		alt = rand() % n ; //random que va de 0 a la longitud del alfabeto
+		alt = rand() % 100 ; //random que va de 0 a 100
 		cout << "random: " << alt << endl;
 		a = mcd(n, alt);
 	}
