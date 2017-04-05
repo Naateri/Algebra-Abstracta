@@ -41,26 +41,23 @@ pair<int, int> mcdExtendido(int a, int b){
 		modulo = moduloQandR(r1, r2);
 		q = modulo.second; //EUCLIDES
 		r = modulo.first; //EUCLIDES
-		cout << q << " = " << r1 << " - " << "(" << r1 << "/" << r2 << ") * " << r2 << endl;
 		r1 = r2;
 		r2 = r; 
 		x = x1 - q*x2;
 		x1 = x2; 
 		x2 = x;
-		cout << "(ALG EXTENDIDO) x: " << x << endl;
-		cout << "(ALG EXTENDIDO) y1, y2: " << y1 << ", " << y2 << endl;
 		y = y1 - q*y2;
 		y1 = y2; 
 		y2 = y;
-		cout << "1 = " << a << "(" << x << ") + " << b << "(" << y << ")\n";
+		//DEBUGGINGcout << r2 << " = " << a << "(" << x << ") + " << b << "(" << y << ")\n";
 	}
-	cout << "fin alg extendido\n";
-	pair<int, int> resultados(x,y); //resultados.first = x
-	return resultados; //resultados.second = y
+	//DEBUGGINGcout << "fin alg extendido\n";
+	pair<int, int> resultados(x1,y1); //resultados.first = x (x1 = x)
+	return resultados; //resultados.second = y (y1 = y)
 }
 int inversa(int a, int n){
 	int x;
-	x = mcdExtendido(n, a).first;
+	x = mcdExtendido(a, n).first;
 	cout << "x: " << x << endl;
 	if (x < 0)
 		x = modulo(x, n);
