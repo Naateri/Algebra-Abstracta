@@ -3,6 +3,9 @@
 #include <iostream>
 #include "maths.h"
 #include <utility>
+#include <stdlib.h> //rand
+#include <time.h>
+
 using namespace std;
 
 int modulo(int a, int n){ //a mod n
@@ -59,4 +62,7 @@ int inversa(int a, int n){
 	if (x < 0)
 		x = modulo(x, n);
 	return x;
+}
+int generadorAleatorios(int tamSeedBits, int tamBitsRandNum, int parts, int vueltas){
+	;
 }
