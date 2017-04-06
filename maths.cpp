@@ -49,18 +49,14 @@ pair<int, int> mcdExtendido(int a, int b){
 		y = y1 - q*y2;
 		y1 = y2; 
 		y2 = y;
-		//DEBUGGINGcout << r2 << " = " << a << "(" << x << ") + " << b << "(" << y << ")\n";
 	}
-	//DEBUGGINGcout << "fin alg extendido\n";
 	pair<int, int> resultados(x1,y1); //resultados.first = x (x1 = x)
 	return resultados; //resultados.second = y (y1 = y)
 }
 int inversa(int a, int n){
 	int x;
 	x = mcdExtendido(a, n).first;
-	//DEBUGGING cout << "x: " << x << endl;
 	if (x < 0)
 		x = modulo(x, n);
-	//DEBUGGING cout << "new x: " << x << endl;
 	return x;
 }
