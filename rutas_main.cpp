@@ -26,7 +26,6 @@ int main(){
 	cin >> key;
 	Rutas Algoritmo(key);
 	cout << "Objeto creado.\n";
-	//Algoritmo.setKey(key);
 	msj = Algoritmo.cifrar(msj);
 	cout << "Mensaje cifrado: " << msj << endl;
 	msj = Algoritmo.descifrar(msj);
