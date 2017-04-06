@@ -58,9 +58,9 @@ pair<int, int> mcdExtendido(int a, int b){
 int inversa(int a, int n){
 	int x;
 	x = mcdExtendido(a, n).first;
-	cout << "x: " << x << endl;
+	//DEBUGGING cout << "x: " << x << endl;
 	if (x < 0)
 		x = modulo(x, n);
-	cout << "new x: " << x << endl;
+	//DEBUGGING cout << "new x: " << x << endl;
 	return x;
 }
