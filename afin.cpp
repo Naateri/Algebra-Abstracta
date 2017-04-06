@@ -25,7 +25,7 @@ void Afin::generarClaves(){
 }
 
 Afin::Afin(){
-	this -> alfabeto = "abcdefghijklmnopqrstuvwxyz ";
+	this -> alfabeto = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,";
 	generarClaves();
 }
 
@@ -62,3 +62,6 @@ string Afin::descifrar(string msj){
 
 int Afin::getA(){return this->a;}
 int Afin::getB(){return this->b;}
+int Afin::getAlfSize(){return this->alfabeto.size();}
+void Afin::setA(int a) {this->a = a;}
+void Afin::setB(int b) {this->b = b;}
