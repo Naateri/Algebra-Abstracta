@@ -11,8 +11,8 @@ int modulo(int a, int n){ //a mod n
 }
 
 int lcg(int seed, int a, int c, unsigned int m = 0x80000000){ //linear congruential algorithm
-  seed = seed * a + c; //0x80000000 = 2^32
-	if (seed > m)
+  seed = seed * a + c; 
+	if (seed > m) //0x80000000 = 2^32
    	seed = modulo(seed, m);
   return seed;
 }
