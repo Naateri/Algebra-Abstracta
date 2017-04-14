@@ -20,7 +20,7 @@ int lcg(int seed, int a, int c, int m = 0x80000000){ //linear congruential algor
   return output;
 }
 
-int mcg(int seed, int a, int m = 0x80000000){ //multiple congruential algorithm
+int mcg(int seed, int a = 214013, int m = 0x80000000){ //multiple congruential algorithm
   int output;
   seed *= a;
   if (m == 0x80000000)
