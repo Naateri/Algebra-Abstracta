@@ -10,11 +10,21 @@ int modulo(int a, int n){ //a mod n
 	return r;
 }
 
-int lgc(int seed, int a, int c, int m = 0x7fff){ //linear congruential method
+int lcg(int seed, int a, int c, int m = 0x80000000){ //linear congruential algorithm
   int output;
   seed = seed * a + c;
-  if (m == 0x7fff)
-    output = (seed >> 16) & 0x7fff; //0x7fff = 2^32
+  if (m == 0x80000000)
+    output = (seed >> 16) & 0x7fff; //0x80000000 = 2^32
+  else
+    output = modulo(seed, m);
+  return output;
+}
+
+int mcg(int seed, int a, int m = 0x80000000){ //multiple congruential algorithm
+  int output;
+  seed *= a;
+  if (m == 0x80000000)
+    output = (seed >> 16) & 0x7fff; //0x80000000 = 2^32
   else
     output = modulo(seed, m);
   return output;
