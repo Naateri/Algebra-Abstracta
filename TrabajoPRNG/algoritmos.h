@@ -1,0 +1,2 @@
+int lgc(int);
+
