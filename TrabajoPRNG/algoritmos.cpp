@@ -11,21 +11,27 @@ int modulo(int a, int n){ //a mod n
 }
 
 int lcg(int seed, int a, int c, int m = 0x80000000){ //linear congruential algorithm
-  int output;
-  seed = seed * a + c;
-  if (m == 0x80000000)
-    output = (seed >> 16) & 0x7fff; //0x80000000 = 2^32
-  else
-    output = modulo(seed, m);
-  return output;
+  seed = seed * a + c; //0x80000000 = 2^32
+	if (seed > m)
+   	seed = modulo(seed, m);
+  return seed;
 }
 
 int mcg(int seed, int a = 214013, int m = 0x80000000){ //multiple congruential algorithm
-  int output;
-  seed *= a;
-  if (m == 0x80000000)
-    output = (seed >> 16) & 0x7fff; //0x80000000 = 2^32
-  else
-    output = modulo(seed, m);
-  return output;
+  seed *= a;  //0x80000000 = 2^32
+  if (seed > m)
+  	seed = modulo(seed, m);
+  return seed;
+}
+
+int lfgSum(int seed, int j, int k, int m = 0x80000000){ //lagged fibonacci generator, $ = +
+	seed = (seed - j) + (seed - k);
+	if (seed > m)
+		seed = modulo(seed, m);
+  return seed;
+}
+
+int lfg(int seed, int j, int k, int m = 0x80000000){ //lagged fibonacci generator, $ = XOR
+	seed = (seed - j) ^ (seed - k);
+	return seed;
 }
