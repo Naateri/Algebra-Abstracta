@@ -1,3 +1,4 @@
 int modulo(int, int);
-int lgc(int);
+int lcg(int);
+int mcg(int);
 
