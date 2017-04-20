@@ -5,6 +5,8 @@
 #include <utility>
 #include <stdlib.h> //rand
 #include <time.h>
+#include <string>
+#include <bitset>
 
 using namespace std;
 
@@ -63,6 +65,43 @@ int inversa(int a, int n){
 		x = modulo(x, n);
 	return x;
 }
-int generadorAleatorios(int tamSeedBits, int tamBitsRandNum, int parts, int vueltas){
-	;
+int generadorAleatorios(int seed, int tamSeedBits, int tamBitsRandNum, int p, int v){ //p = particiones, v = vueltas
+	int randNum, sizeOfP, cont = 0;
+	string num;
+	bool bit;
+	randNum = seed;
+	randNum <<= (tamBitsRandNum - tamSeedBits); 
+	for (int i = 0, j = tamSeedBits; i < (tamBitsRandNum - tamSeedBits); i++, j++){ //llenar bits que faltan
+		bit = ((randNum ^ (1u << i-1)) ^ (randNum ^ (1u << i))); //(S(i) + S(i+1))mod 2    
+		if (bit) //si bit == 1, esa posicion será 1, si no se queda como 0
+			randNum ^= (1u << (j-1));
+	}
+	string partitions[p]; //creando las particiones
+	sizeOfP = tamBitsRandNum / p;
+	bitset<tamBitsRandNum> numBits (randNum);
+	num = numBits.to_string();
+	j = sizeOfP;
+	for (i = 0; i < sizeOfP; i++){ //llenando array
+		while (j > 0){
+			partitions[i] += num[cont];
+			cont++;
+			j--;
+		}
+		j = sizeOfP;
+	}
+	for (i = 0; i < v; i++){ //haciendo las vueltas
+		for (j = 0; j < p; j++){ //analizando cada elemento del array
+			bitset<sizeOfP> temp (partitions[j]);
+			bit = temp[0];
+			temp >>= 1;
+			temp[sizeOfP-1] ^= bit;
+			partitions[j] = temp.to_string();
+		}
+	}
+	num.clear();
+	for (i = 0; i < p; i++)
+		num += partitions[i];
+	bitset<tamBitsRandNum> finalnum (num);
+	randNum = finalnum.to_ulong();
+	return randNum;
 }
