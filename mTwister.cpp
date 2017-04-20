@@ -1,7 +1,5 @@
 #include <iostream>
-//#include "mTwister.h"
-#include "maths.h"
-
+#include <cstdlib>
 using namespace std;
 
 #define W 32
@@ -23,6 +21,15 @@ using namespace std;
 static int mt[N];
 static short index;
 
+int modulo(int a, int n){ //a mod n
+	int q, r;
+	q = a/n;
+	r = a - (q*n);
+	if (r<0)
+		r += n;
+	return r;
+}
+
 static void Initialize(unsigned int seed){
 	unsigned int i;
 	mt[0] = seed;
@@ -35,12 +42,12 @@ static void Twist(){
 	unsigned int i, x, xA;
 	unsigned short suma;
 	for (i = 0; i < N; i++){
-		if (i == N-1) i = 0; //para que no se salga del array
+		//if (i == N-1) i = 0; //para que no se salga del array
 		x = (mt[i] & MASK_UPPER) + (mt[i+1] & MASK_LOWER);
 		xA = x >> 1;
 		if (x & 0x1) xA ^= A; //si x_0 es 1
 		suma = i+N;
-		if (suma > N) suma = modulo(suma, N);
+		if (suma >= N) suma = modulo(suma, N);
 		mt[i] = mt[suma] ^ xA; //ecuacion 7
 	}
 	index = 0;
@@ -53,6 +60,7 @@ unsigned int getRand(){
 	i = index;
 	y = mt[i];
 	index = i + 1;
+	cout << y << endl;
 	y ^= (mt[i] >> U);
 	y ^= (y << S) & B;
 	y ^= (y << T) & C;
@@ -62,8 +70,9 @@ unsigned int getRand(){
 
 int main(){
 	Initialize(time(NULL));
-	int a = getRand();
-	cout << a << endl;
+	for (int i = 0; i < 20; i++){
+		unsigned int a = getRand();
+		cout << a << endl;
+	}
 	return 0;
 }
-
