@@ -1,5 +1,9 @@
-int modulo(int, int);
-int lcg(int, int, int, int);
-int mcg(int, int, int);
-int lfgsum(int, int, int, int);
+//algoritmos de numeros aleatorios
+#include <iostream>
+#ifndef ALGORITMOS_H_INCLUDED
+#define ALGORITMOS_H_INCLUDED 
+int lcg(int seed, int a = 214013, int c = 2531011, unsigned int m = 0x80000000);
+int mcg(int seed, int a = 214013, unsigned int m = 0x80000000);
+int lfgsum(int seed, int j, int k, unsigned int m = 0x80000000);
 int lfg(int, int, int);
+#endif
