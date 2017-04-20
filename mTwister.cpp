@@ -16,7 +16,7 @@ using namespace std;
 #define T 15
 #define C 0xEFC60000
 #define L 18
-#define M
+#define M 397
 #define MASK_LOWER (1ull << R) - 1 //2^32 - 1
 #define MASK_UPPER (1ull << R) //2^32
 
