@@ -105,3 +105,17 @@ int generadorAleatorios(int seed, int tamSeedBits, int tamBitsRandNum, int p, in
 	randNum = finalnum.to_ulong();
 	return randNum;
 }
+
+int potenciacion(int a, int b){
+	int m, temp, res;
+	res = 1;
+	m = b;
+	while(m != 0){
+		if (m == b) temp = a;
+		else temp *= temp;
+		if (m%2 == 1)
+			res *= temp;
+		m/=2;
+	}
+	return res;
+}
