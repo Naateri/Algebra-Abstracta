@@ -10,4 +10,5 @@ std::pair<int, int> mcdExtendido(int a, int b);
 int inversa(int, int);
 int generadorAleatorios(int, int, int, int, int);
 int potenciacion(int, int);
+int potenModular(int, int, int);
 #endif 
