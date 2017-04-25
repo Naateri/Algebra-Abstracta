@@ -113,9 +113,32 @@ int potenciacion(int a, int b){
 	while(m != 0){
 		if (m == b) temp = a;
 		else temp *= temp;
-		if (m%2 == 1)
+		if (modulo(m, 2) == 1)
 			res *= temp;
 		m/=2;
+	}
+	return res;
+}
+
+int potenModular(int a, int b, int m){
+	int n, temp, res;
+	res = 1;
+	n = b;
+	while(n != 0){
+		if (n == b){
+			temp = a;
+			if (temp > m)
+				temp = modulo(temp, m); //por si ocurre que a > m
+		}else{ 
+			if (temp > m)
+				temp = modulo(temp, m);
+			temp *= temp;
+		}
+		if (modulo(n, 2) == 1)
+			res *= temp;
+		if (res > m)
+			res = modulo(res, m);
+		n/=2;
 	}
 	return res;
 }
