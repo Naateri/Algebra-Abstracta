@@ -9,8 +9,12 @@ using namespace std;
 
 void RSA::generarClaves(){
 	NTL::ZZ p, q, e, N; //testear primalidad de p y q
-	p = ga(16, 8, 1, 1);
-	q = ga(16, 8, 1, 1);
+	do{
+		p = ga(16, 8, 1, 1);
+	}while(NTL::ProbPrime(p, 1));
+	do{
+		q = ga(16, 8, 1, 1);
+	}while(NTL::ProbPrime(q, 1));
 	N = p*q;
 	this->phi = (p - 1) * (q - 1);
 	do{
@@ -51,11 +55,16 @@ vector<NTL::ZZ> RSA::cifrar(string msj){
 
 string RSA::descifrar(vector<NTL::ZZ> msj){
 	string descifrado;
+	descifrado.clear();
 	NTL::ZZ val, res;
+	long a;
 	for(int i = 0; i < msj.size(); i++){
 		val = msj.at(i);
 		res = ntlPotenModular(val, this->privKey, this->phi);
-		descifrado += this->alfabeto[res]; //castear res a int o val a int para llamar a potenmodular normal
+		//NTL::conv(a, res);
+		NTL::conv(res, a);
+		//a = ntlPotenModularL(val, this->privKey, this->phi);
+		descifrado += this->alfabeto.at(res); //castear res a int o val a int para llamar a potenmodular normal
 	}
 	return descifrado;
 }
