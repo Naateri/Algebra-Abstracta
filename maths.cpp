@@ -6,16 +6,26 @@
 #include <stdlib.h> //rand
 #include <time.h>
 #include <string>
-#include <bitset>
+#include <vector>
+#include <NTL/ZZ.h>
 
 using namespace std;
 
-int modulo(int a, int n){ //a mod n
-	int q, r;
+long modulo(long a, long n){ //a mod n
+	long q, r;
 	q = a/n;
 	r = a - (q*n);
 	if (r<0)
 		r += n;
+	return r;
+}
+
+NTL::ZZ ntlModulo(NTL::ZZ a, long n){
+	NTL::ZZ q, r;
+	q = a/n;
+	r = a - (q*n);
+	if (r<0)
+		r+=n;
 	return r;
 }
 
@@ -29,8 +39,8 @@ pair<int, int> moduloQandR(int a, int n){
 	return values;
 }
 
-int mcd(int a, int b){ //mcd iterativo
-	int r;
+long mcd(long a, long b){ //mcd iterativo
+	long r;
 	while (b!=0){
 		r = modulo(a, b);
 		a = b;
@@ -39,9 +49,9 @@ int mcd(int a, int b){ //mcd iterativo
 	return a;
 }
 
-pair<int, int> mcdExtendido(int a, int b){
-	int r, r1 = a, r2 = b, x, x1 = 1, x2 = 0, y, y1 = 0, y2 = 1, q;
-	pair<int, int> modulo;
+pair<long, long> mcdExtendido(long a, long b){
+	long r, r1 = a, r2 = b, x, x1 = 1, x2 = 0, y, y1 = 0, y2 = 1, q;
+	pair<long, long> modulo;
 	while (r2 != 0){
 		modulo = moduloQandR(r1, r2);
 		q = modulo.second; //EUCLIDES
@@ -55,19 +65,20 @@ pair<int, int> mcdExtendido(int a, int b){
 		y1 = y2;
 		y2 = y;
 	}
-	pair<int, int> resultados(x1,y1); //resultados.first = x (x1 = x)
+	pair<long, long> resultados(x1,y1); //resultados.first = x (x1 = x)
 	return resultados; //resultados.second = y (y1 = y)
 }
-int inversa(int a, int n){
-	int x;
+long inversa(long a, long n){
+	long x;
 	x = mcdExtendido(a, n).first;
 	if (x < 0)
 		x = modulo(x, n);
 	return x;
 }
 
-int potenciacion(int a, int b){
-	int m, temp, res;
+long long potenciacion(int a, int b){
+	long long m, temp;
+	long long res;
 	res = 1;
 	m = b;
 	while(m != 0){
@@ -80,8 +91,8 @@ int potenciacion(int a, int b){
 	return res;
 }
 
-int potenModular(int a, int b, int m){
-	int n, temp, res;
+long potenModular(long a, long b, long m){
+	long n, temp, res;
 	res = 1;
 	n = b;
 	while(n != 0){
@@ -101,4 +112,77 @@ int potenModular(int a, int b, int m){
 		n/=2;
 	}
 	return res;
+}
+
+NTL::ZZ ntlPotenModular(NTL::ZZ a, long b, long m){
+	long n;
+	NTL::ZZ temp, res;
+	res = 1;
+	n = b;
+	while(n != 0){
+		if (n == b){
+			temp = a;
+			if (temp > m)
+				temp = ntlModulo(temp, m); //por si ocurre que a > m
+		}else{
+			if (temp > m)
+				temp = ntlModulo(temp, m);
+			temp *= temp;
+		}
+		if (modulo(n, 2) == 1)
+			res *= temp;
+		if (res > m)
+			res = modulo(res, m);
+		n/=2;
+	}
+	return res;
+}
+
+/*
+Generador de aleatorios*/
+
+NTL::ZZ getBase10(vector<bool> binary){
+	NTL:ZZ ret;
+	int pot = binary.size() - 1;
+	for(int i = 0; i < binary.size(); i++, pot--){
+		if (binary.at(i))
+			ret += potenciacion(2, pot);
+	}
+	return ret;
+}
+
+void rightShift(vector<bool> &binary, int shift){
+	for (int i = shift; i < binary.size(); i++){
+		binary.at(i) = binary.at(i-shift);
+	}
+}
+
+void leftShift(vector<bool> &binary, int shift){
+	for (int i = (binary.size() - shift); i > 0; i--){
+		binary.at(i-shift) = binary.at(i);
+	}
+}
+
+NTL::ZZ ga(int tamTotal, int seedSize, int parts, int v){
+	vector<bool> binary;
+	long seed;
+	int i, j, sizeOfPart;
+	long s;
+	seed = time(NULL);
+	bool res;
+	NTL::ZZ result;
+	for (i = 0; i < seedSize; i++){ //llenando el vector con la semilla en bits-
+		if (modulo(seed, 2) == 1){
+			binary.push_back(1);
+		} else binary.push_back(0);
+		seed /= 2;
+	}
+	for (j = 0, i; i < tamTotal; i++, j++){
+		res = binary.at(j) ^ binary.at(j+1); //pos = s_0 + s_1
+		binary.push_back(res);
+	}
+	sizeOfPart = tamTotal / parts;
+	
+	result = getBase10(binary);
+	return result;
 }
