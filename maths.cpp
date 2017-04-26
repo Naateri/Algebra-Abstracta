@@ -29,7 +29,7 @@ pair<int, int> moduloQandR(int a, int n){
 	return values;
 }
 
-int mcd(int a, int b){ //mcd iterativo 
+int mcd(int a, int b){ //mcd iterativo
 	int r;
 	while (b!=0){
 		r = modulo(a, b);
@@ -47,12 +47,12 @@ pair<int, int> mcdExtendido(int a, int b){
 		q = modulo.second; //EUCLIDES
 		r = modulo.first; //EUCLIDES
 		r1 = r2;
-		r2 = r; 
+		r2 = r;
 		x = x1 - q*x2;
-		x1 = x2; 
+		x1 = x2;
 		x2 = x;
 		y = y1 - q*y2;
-		y1 = y2; 
+		y1 = y2;
 		y2 = y;
 	}
 	pair<int, int> resultados(x1,y1); //resultados.first = x (x1 = x)
@@ -64,46 +64,6 @@ int inversa(int a, int n){
 	if (x < 0)
 		x = modulo(x, n);
 	return x;
-}
-int generadorAleatorios(int seed, int tamSeedBits, int tamBitsRandNum, int p, int v){ //p = particiones, v = vueltas
-	int randNum, sizeOfP, cont = 0;
-	string num;
-	bool bit;
-	randNum = seed;
-	randNum <<= (tamBitsRandNum - tamSeedBits); 
-	for (int i = 0, j = tamSeedBits; i < (tamBitsRandNum - tamSeedBits); i++, j++){ //llenar bits que faltan
-		bit = ((randNum ^ (1u << i-1)) ^ (randNum ^ (1u << i))); //(S(i) + S(i+1))mod 2    
-		if (bit) //si bit == 1, esa posicion será 1, si no se queda como 0
-			randNum ^= (1u << (j-1));
-	}
-	string partitions[p]; //creando las particiones
-	sizeOfP = tamBitsRandNum / p;
-	bitset<tamBitsRandNum> numBits (randNum);
-	num = numBits.to_string();
-	j = sizeOfP;
-	for (i = 0; i < sizeOfP; i++){ //llenando array
-		while (j > 0){
-			partitions[i] += num[cont];
-			cont++;
-			j--;
-		}
-		j = sizeOfP;
-	}
-	for (i = 0; i < v; i++){ //haciendo las vueltas
-		for (j = 0; j < p; j++){ //analizando cada elemento del array
-			bitset<sizeOfP> temp (partitions[j]);
-			bit = temp[0];
-			temp >>= 1;
-			temp[sizeOfP-1] ^= bit;
-			partitions[j] = temp.to_string();
-		}
-	}
-	num.clear();
-	for (i = 0; i < p; i++)
-		num += partitions[i];
-	bitset<tamBitsRandNum> finalnum (num);
-	randNum = finalnum.to_ulong();
-	return randNum;
 }
 
 int potenciacion(int a, int b){
@@ -129,7 +89,7 @@ int potenModular(int a, int b, int m){
 			temp = a;
 			if (temp > m)
 				temp = modulo(temp, m); //por si ocurre que a > m
-		}else{ 
+		}else{
 			if (temp > m)
 				temp = modulo(temp, m);
 			temp *= temp;
