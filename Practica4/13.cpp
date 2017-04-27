@@ -1,6 +1,5 @@
 #include <iostream>
 #include <vector>
-#include <utility>
 using namespace std;
 
 pair<long, long> modulo(long a, long n){ //a mod n
@@ -41,30 +40,17 @@ vector<long> algoritmo(long a, long b){
 	return result;
 }
 
-int main(){
-	vector<long> i;
-	vector<long> ii;
-	vector<long> iii;
-	vector<long> iv;
-	i = algoritmo(527, 1258);
-	ii = algoritmo(228, 1056);
-	iii = algoritmo(163961, 167181);
-	iv = algoritmo(3892394, 239847);
-	cout << "i: (527, 1258)\n";
-	cout << "g: " << i.at(0) << endl;
-	cout << "u: " << i.at(1) << endl;
-	cout << "v: " << i.at(2) << endl;
-	cout << "ii: (228, 1056)\n";
-	cout << "g: " << ii.at(0) << endl;
-	cout << "u: " << ii.at(1) << endl;
-	cout << "v: " << ii.at(2) << endl;
-	cout << "iii: (163961, 167181)\n";
-	cout << "g: " << iii.at(0) << endl;
-	cout << "u: " << iii.at(1) << endl;
-	cout << "v: " << iii.at(2) << endl;
-	cout << "iv: (3892394, 239847)\n";
-	cout << "g: " << iv.at(0) << endl;
-	cout << "u: " << iv.at(1) << endl;
-	cout << "v: " << iv.at(2) << endl;
+long inversa(long a, long n){ //retorna 0 si no hay inversa
+	vector<long> gcd; 
+	gcd = algoritmo(a, n);
+	if (gcd.at(0) == 1)
+		return gcd.at(1);
+	else
+		return 0;
+}
+
+int main(int argc, char *argv[]) {
+	cout << inversa(13, 17);
 	return 0;
 }
+

@@ -57,14 +57,10 @@ string RSA::descifrar(vector<NTL::ZZ> msj){
 	string descifrado;
 	descifrado.clear();
 	NTL::ZZ val, res;
-	long a;
 	for(int i = 0; i < msj.size(); i++){
 		val = msj.at(i);
 		res = ntlPotenModular(val, this->privKey, this->phi);
-		//NTL::conv(a, res);
-		NTL::conv(res, a);
-		//a = ntlPotenModularL(val, this->privKey, this->phi);
-		descifrado += this->alfabeto.at(res); //castear res a int o val a int para llamar a potenmodular normal
+		descifrado += this->alfabeto.at(NTL::to_int(res)); //castear res a int o val a int para llamar a potenmodular normal
 	}
 	return descifrado;
 }
