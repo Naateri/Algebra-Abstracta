@@ -20,7 +20,7 @@ long modulo(long a, long n){ //a mod n
 	return r;
 }
 
-NTL::ZZ ntlModulo(NTL::ZZ a, long n){
+NTL::ZZ ntlModulo(NTL::ZZ a, NTL::ZZ n){
 	NTL::ZZ q, r;
 	q = a/n;
 	r = a - (q*n);
@@ -232,7 +232,7 @@ NTL::ZZ ga(int tamTotal, int seedSize, int parts, int v){
 		binary.push_back(res);
 	}
 	sizeOfPart = tamTotal / parts;
-	
+
 	result = getBase10(binary);
 	return result;
 }
