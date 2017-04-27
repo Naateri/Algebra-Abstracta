@@ -6,7 +6,7 @@
 #ifndef MATHS_H_INCLUDED
 #define MATHS_H_INCLUDED
 long modulo(long a, long n);
-NTL::ZZ ntlModulo(NTL::ZZ a, NTL::ZZ n);
+NTL::ZZ ntlModulo(NTL::ZZ, NTL::ZZ);
 std::pair<int, int> moduloQandR(int a, int n);
 std::pair<NTL::ZZ, NTL::ZZ> moduloQandRntl(NTL::ZZ a, NTL::ZZ n);
 long mcd(long a, long b);
