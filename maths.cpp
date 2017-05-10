@@ -120,6 +120,9 @@ long inversa(long a, long n){
 
 NTL::ZZ inversaNTL(NTL::ZZ a, NTL::ZZ n){
 	NTL::ZZ num;
+	if(NTL::ProbPrime(a, 1) && ntlModulo(n, a) != 0){ //teorema de fermat: si n es primo y n no divide a a
+        return ntlPotenModular(a, n-2, n);
+	}
 	num = mcdExtendidoNTL(a, n).first;
 	if (num < 0)
 		num = ntlModulo(num, n);
@@ -165,9 +168,15 @@ long potenModular(long a, long b, long m){
 }
 
 NTL::ZZ ntlPotenModular(NTL::ZZ a, NTL::ZZ b, NTL::ZZ m){
-	NTL::ZZ n;
-	NTL::ZZ temp, res;
-	res = 1;
+    NTL::ZZ res;
+    res = 1;
+    if (a == 0)
+        return a;
+    if (NTL::ProbPrime(b, 1) && b == m) //si b es primo y b es m
+        return ntlModulo(a, b); //a^b mod m = (a mod p) mod m (FERMAT 2)
+    if (ntlModulo(m, a) != 0 && NTL::ProbPrime(m, 1) && b == m-1) //si m no divide a a y es primo y b es m-1(FERMAT 1)
+        return res; //resultado = 1 (a^{p-1} = 1 mod p)
+	NTL::ZZ n , temp;
 	n = b;
 	while(n != 0){
 		if (n == b){
