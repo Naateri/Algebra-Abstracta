@@ -66,6 +66,7 @@ NTL::ZZ mcdNTL(NTL::ZZ a, NTL::ZZ b){
 		a = b;
 		b = r;
 	}
+	return a;
 }
 
 pair<long, long> mcdExtendido(long a, long b){
@@ -125,16 +126,15 @@ NTL::ZZ inversaNTL(NTL::ZZ a, NTL::ZZ n){
 	return num;
 }
 
-
-long long potenciacion(int a, int b){
-	long long m, temp;
-	long long res;
-	res = 1;
+NTL::ZZ potenciacion(NTL::ZZ a, NTL::ZZ b){
+	NTL::ZZ m, temp;
+	NTL::ZZ res;
+	res = NTL::conv<NTL::ZZ>("1");
 	m = b;
 	while(m != 0){
 		if (m == b) temp = a;
 		else temp *= temp;
-		if (modulo(m, 2) == 1)
+		if (ntlModulo(m, NTL::to_ZZ(2)) == 1)
 			res *= temp;
 		m/=2;
 	}
@@ -179,7 +179,7 @@ NTL::ZZ ntlPotenModular(NTL::ZZ a, NTL::ZZ b, NTL::ZZ m){
 				temp = ntlModulo(temp, m);
 			temp *= temp;
 		}
-		if (ntlModulo(n, 2) == 1)
+		if (ntlModulo(n, NTL::to_ZZ(2)) == 1)
 			res *= temp;
 		if (res > m)
 			res = ntlModulo(res, m);
@@ -196,7 +196,7 @@ NTL::ZZ getBase10(vector<bool> binary){
 	int pot = binary.size() - 1;
 	for(int i = 0; i < binary.size(); i++, pot--){
 		if (binary.at(i))
-			ret += potenciacion(2, pot);
+			ret += potenciacion(NTL::to_ZZ(2), NTL::to_ZZ(pot));
 	}
 	return ret;
 }
@@ -232,7 +232,6 @@ NTL::ZZ ga(int tamTotal, int seedSize, int parts, int v){
 		binary.push_back(res);
 	}
 	sizeOfPart = tamTotal / parts;
-
 	result = getBase10(binary);
 	return result;
 }
