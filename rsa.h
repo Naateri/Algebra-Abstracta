@@ -13,7 +13,7 @@ private:
 	void generarClaves();
 public:
 	RSA();
-	RSA(NTL::ZZ publicKey, NTL::ZZ ene);
+	RSA(NTL::ZZ publicKey, NTL::ZZ ene, NTL::ZZ fi);
 	std::vector<NTL::ZZ> cifrar(std::string msj);
 	std::string descifrar(std::vector<NTL::ZZ> msj);
 	NTL::ZZ getPubKey();
@@ -22,4 +22,5 @@ public:
 	void setPubKey(NTL::ZZ);
 	void setPrivKey(NTL::ZZ);
 	NTL::ZZ getN();
+	NTL::ZZ getPhi();
 };
