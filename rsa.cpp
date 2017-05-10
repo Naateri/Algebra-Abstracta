@@ -10,11 +10,11 @@ using namespace std;
 void RSA::generarClaves(){
 	NTL::ZZ e; //testear primalidad de p y q
 	this->p = ga(1024, 32, 1, 1);
-    this->p = NTL::NextPrime(this->p, 1);
+	this->p = NTL::NextPrime(this->p, 1);
 	this->q = ga(1024, 32, 1, 1);
 	this->q = NTL::NextPrime(this->q, 1);
 	this->N = p*q;
-    this->phi = (p - 1) * (q - 1);
+	this->phi = (p - 1) * (q - 1);
 	do{
 		e = ga(1024, 32, 1, 1);
 	}while(mcdNTL(e, this->phi) != 1 || e >= this->N); //e debe ser menor que N
@@ -39,7 +39,7 @@ vector<NTL::ZZ> RSA::cifrar(string msj){ //GUT
 	NTL::ZZ result, foundCast;
 	for(i = 0; i < msj.size(); i++){
 		found = this->alfabeto.find(msj.at(i)); //la letra
-        result = ntlPotenModular(NTL::to_ZZ(found),this->pubKey, this->N); //cifrado en si
+        	result = ntlPotenModular(NTL::to_ZZ(found),this->pubKey, this->N); //cifrado en si
 		cifrado.push_back(result);
 	}
 	return cifrado;
