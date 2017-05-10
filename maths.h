@@ -15,7 +15,7 @@ std::pair<long, long> mcdExtendido(long a, long b);
 std::pair<NTL::ZZ, NTL::ZZ> mcdExtendidoNTL(NTL::ZZ a, NTL::ZZ b);
 long inversa(long, long);
 NTL::ZZ inversaNTL(NTL::ZZ a, NTL::ZZ n);
-long long potenciacion(int, int);
+NTL::ZZ potenciacion(NTL::ZZ a, NTL::ZZ b);
 long potenModular(long, long, long);
 NTL::ZZ ntlPotenModular(NTL::ZZ a, NTL::ZZ b, NTL::ZZ m);
 //GENERADOR DE ALEATORIOS
