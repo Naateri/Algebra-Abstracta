@@ -8,18 +8,16 @@
 using namespace std;
 
 void RSA::generarClaves(){
-	NTL::ZZ p, q, e, N; //testear primalidad de p y q
+	NTL::ZZ e; //testear primalidad de p y q
+	this->p = ga(1024, 32, 1, 1);
+    this->p = NTL::NextPrime(this->p, 1);
+	this->q = ga(1024, 32, 1, 1);
+	this->q = NTL::NextPrime(this->q, 1);
+	this->N = p*q;
+    this->phi = (p - 1) * (q - 1);
 	do{
-		p = ga(16, 8, 1, 1);
-	}while(NTL::ProbPrime(p, 1));
-	do{
-		q = ga(16, 8, 1, 1);
-	}while(NTL::ProbPrime(q, 1));
-	N = p*q;
-	this->phi = (p - 1) * (q - 1);
-	do{
-		e = ga(32, 16, 1, 1);
-	}while(mcdNTL(e, this->phi) != 1 || e >= N); //e debe ser menor que N
+		e = ga(1024, 32, 1, 1);
+	}while(mcdNTL(e, this->phi) != 1 || e >= this->N); //e debe ser menor que N
 	this->pubKey = e;
 	this->privKey = inversaNTL(e, this->phi);
 }
@@ -29,37 +27,32 @@ RSA::RSA(){ //receptor
 	generarClaves();
 }
 
-RSA::RSA(NTL::ZZ publicKey, NTL::ZZ privateKey){ //emisor
+RSA::RSA(NTL::ZZ publicKey, NTL::ZZ ene){ //emisor
 	this->alfabeto = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,;";
 	this->pubKey = publicKey;
-	NTL::ZZ mod;
-	mod = (this->privKey - 1) * (this->pubKey - 1);//phi
-	this->privKey = inversaNTL(this->pubKey, this->phi);
+	this->N = ene;
 }
 
-vector<NTL::ZZ> RSA::cifrar(string msj){
+vector<NTL::ZZ> RSA::cifrar(string msj){ //GUT
 	vector<NTL::ZZ> cifrado;
-	char letra;
 	long i, found;
 	NTL::ZZ result, foundCast;
 	for(i = 0; i < msj.size(); i++){
-		letra = msj[i];
-		found = this->alfabeto.find(letra); //la letra
-		foundCast = found; //para que me deje usar la funcion con NTL
-		result = ntlPotenModular(foundCast,this->pubKey, this->phi); //cifrado en si
+		found = this->alfabeto.find(msj.at(i)); //la letra
+        result = ntlPotenModular(NTL::to_ZZ(found),this->pubKey, this->N); //cifrado en si
 		cifrado.push_back(result);
 	}
 	return cifrado;
-	
+
 }
 
-string RSA::descifrar(vector<NTL::ZZ> msj){
+string RSA::descifrar(vector<NTL::ZZ> msj){ //CHECK
 	string descifrado;
 	descifrado.clear();
 	NTL::ZZ val, res;
 	for(int i = 0; i < msj.size(); i++){
 		val = msj.at(i);
-		res = ntlPotenModular(val, this->privKey, this->phi);
+		res = ntlPotenModular(val, this->privKey, this->N);
 		descifrado += this->alfabeto.at(NTL::to_int(res)); //castear res a int o val a int para llamar a potenmodular normal
 	}
 	return descifrado;
@@ -74,3 +67,5 @@ int RSA::getAlfSize() {return this->alfabeto.size();}
 void RSA::setPrivKey(NTL::ZZ a) {this -> privKey = a;}
 
 void RSA::setPubKey(NTL::ZZ a) {this -> pubKey = a;}
+
+NTL::ZZ RSA::getN() {return this->N;}
