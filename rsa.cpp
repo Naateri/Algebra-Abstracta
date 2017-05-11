@@ -38,9 +38,9 @@ vector<NTL::ZZ> RSA::cifrar(string msj){ //GUT
 	vector<NTL::ZZ> cifrado;
 	long i, found;
 	bool euler;
-	NTL::ZZ result, foundCast, k, temp;
+	NTL::ZZ result, k, temp;
 	temp = this->pubKey - NTL::to_ZZ(1);
-	k = temp / this->phi; //Euler: a^{k*phi(N) + 1} === a mod n
+	//k = temp / this->phi; //Euler: a^{k*phi(N) + 1} === a mod n
     if (ntlModulo(temp, this->phi) == 0){ //comprobando que se cumpla lo de arriba
             euler = true; //si se cumple, result = a mod n
     } else //si no, se realiza la potenciacion modular
@@ -60,10 +60,21 @@ vector<NTL::ZZ> RSA::cifrar(string msj){ //GUT
 string RSA::descifrar(vector<NTL::ZZ> msj){ //CHECK
 	string descifrado;
 	descifrado.clear();
-	NTL::ZZ val, res;
+	NTL::ZZ val, res, k, temp;
+	bool euler;
+	temp = this->privKey - NTL::to_ZZ(1);
+	//k = temp / this->phi; //Euler: a^{k*phi(N) + 1} === a mod n
+    if (ntlModulo(temp, this->phi) == 0){ //comprobando que se cumpla lo de arriba
+        euler = true; //si se cumple, result = a mod n
+    } else //si no, se realiza la potenciacion modular
+        euler = false;
 	for(int i = 0; i < msj.size(); i++){
 		val = msj.at(i);
-		res = ntlPotenModular(val, this->privKey, this->N);
+		if (euler){
+            res = ntlModulo(val, this->N);
+		} else {
+            res = ntlPotenModular(val, this->privKey, this->N);
+		}
         descifrado += this->alfabeto.at(NTL::to_int(res)); //castear res a int o val a int para llamar a potenmodular normal
 	}
 	return descifrado;
