@@ -12,7 +12,7 @@ long modulo(long a, long n){ //a mod n
 
 long expo(long a, long p, long n){
 	long r = 1;
-	for (long i = 1; i <= p; i++){
+	for (long i = 1; i < p; i++){
 		r*=a;
 		r = modulo(r, n);
 	}
@@ -22,15 +22,15 @@ long expo(long a, long p, long n){
 long expo2(long a, long p, long n){
 	if (p == 0)
 		return 1;
-	long t;
-	if (modulo(p, 2) == 0){
-		t = expo2(a, p/2, n);
+	long t, mod;
+	if (!(p&1)){
+		t = expo2(a, p>>1, n);
 		t*=t;
 		return modulo(t, n);
 	}
-	t = expo2(a, (p-1)/2, n);
+	t = expo2(a, (p-1)>>2, n);
 	t*=t;
-	long mod = modulo(t,n);
+	mod = modulo(t,n);
 	return modulo(a * mod, n);
 }
 
