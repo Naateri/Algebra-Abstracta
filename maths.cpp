@@ -197,6 +197,38 @@ NTL::ZZ ntlPotenModular(NTL::ZZ a, NTL::ZZ b, NTL::ZZ m){
 	return res;
 }
 
+NTL::ZZ modExponentiation1(NTL::ZZ a, NTL::ZZ b, NTL::ZZ n){
+    NTL::ZZ exp, x;
+    exp = 1;
+    x = ntlModulo(a, b);
+    while (b>0){
+        cout << "B: " << b << endl;
+        if ((b&1) == 1){
+            exp *= x;
+            exp = ntlModulo(exp, n);
+        }
+        x *= x;
+        x = ntlModulo(x, n);
+        b /= 2;
+    }
+    return exp;
+}
+
+NTL::ZZ modExponentiation2(NTL::ZZ a, NTL::ZZ b, NTL::ZZ n, int k){ //k = numero de bits para representar el numero -1
+    NTL::ZZ d;
+    d = 1;
+    for (; k >= 0; k--){
+        d *= d;
+        d = ntlModulo(d, n);
+        //bit = (a >> k) & 1;
+        if (((b >> k) & 1) == 1){ //bit en la posicion k
+            d *= a;
+            d = ntlModulo(d, n);
+        }
+    }
+    return d;
+}
+
 vector<NTL::ZZ> ecuModulo(NTL::ZZ a, NTL::ZZ b, NTL::ZZ n){ //ax === b mod n
     NTL::ZZ x, d, k, r;
     vector<NTL::ZZ> results;
