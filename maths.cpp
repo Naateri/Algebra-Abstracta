@@ -202,7 +202,6 @@ NTL::ZZ modExponentiation1(NTL::ZZ a, NTL::ZZ b, NTL::ZZ n){
     exp = 1;
     x = ntlModulo(a, b);
     while (b>0){
-        cout << "B: " << b << endl;
         if ((b&1) == 1){
             exp *= x;
             exp = ntlModulo(exp, n);
