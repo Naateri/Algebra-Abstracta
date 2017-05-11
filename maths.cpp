@@ -197,6 +197,20 @@ NTL::ZZ ntlPotenModular(NTL::ZZ a, NTL::ZZ b, NTL::ZZ m){
 	return res;
 }
 
+vector<NTL::ZZ> ecuModulo(NTL::ZZ a, NTL::ZZ b, NTL::ZZ n){ //ax === b mod n
+    NTL::ZZ x, d, k, r;
+    vector<NTL::ZZ> results;
+    d = mcdNTL(a,n);
+    a = inversaNTL(a, n);
+    r = a*b;
+    r = ntlModulo(r, n);
+    for(k = 0; k < d; k++){
+        x = n*k + r;
+        results.push_back(x);
+    }
+    return results;
+}
+
 /*
 Generador de aleatorios*/
 

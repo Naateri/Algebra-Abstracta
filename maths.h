@@ -18,6 +18,7 @@ NTL::ZZ inversaNTL(NTL::ZZ a, NTL::ZZ n);
 NTL::ZZ potenciacion(NTL::ZZ a, NTL::ZZ b);
 long potenModular(long, long, long);
 NTL::ZZ ntlPotenModular(NTL::ZZ a, NTL::ZZ b, NTL::ZZ m);
+vector<NTL::ZZ> ecuModulo(NTL::ZZ a, NTL::ZZ b, NTL::ZZ n);
 //GENERADOR DE ALEATORIOS
 NTL::ZZ getBase10(std::vector<bool> binary);
 void rightShift(std::vector<bool> &binary, int shift);
