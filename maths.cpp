@@ -120,9 +120,6 @@ long inversa(long a, long n){
 
 NTL::ZZ inversaNTL(NTL::ZZ a, NTL::ZZ n){
 	NTL::ZZ num;
-	if(NTL::ProbPrime(a, 1) && ntlModulo(n, a) != 0){ //teorema de fermat: si n es primo y n no divide a a
-        return ntlPotenModular(a, n-2, n);
-	}
 	num = mcdExtendidoNTL(a, n).first;
 	if (num < 0)
 		num = ntlModulo(num, n);
@@ -168,15 +165,9 @@ long potenModular(long a, long b, long m){
 }
 
 NTL::ZZ ntlPotenModular(NTL::ZZ a, NTL::ZZ b, NTL::ZZ m){
-    NTL::ZZ res;
-    res = 1;
-    if (a == 0)
-        return a;
-    if (NTL::ProbPrime(b, 1) && b == m) //si b es primo y b es m
-        return ntlModulo(a, b); //a^b mod m = (a mod p) mod m (FERMAT 2)
-    if (ntlModulo(m, a) != 0 && NTL::ProbPrime(m, 1) && b == m-1) //si m no divide a a y es primo y b es m-1(FERMAT 1)
-        return res; //resultado = 1 (a^{p-1} = 1 mod p)
-	NTL::ZZ n , temp;
+	NTL::ZZ n;
+	NTL::ZZ temp, res;
+	res = 1;
 	n = b;
 	while(n != 0){
 		if (n == b){
@@ -197,80 +188,10 @@ NTL::ZZ ntlPotenModular(NTL::ZZ a, NTL::ZZ b, NTL::ZZ m){
 	return res;
 }
 
-NTL::ZZ modExponentiation1(NTL::ZZ a, NTL::ZZ b, NTL::ZZ n){
-    NTL::ZZ exp, x;
-    exp = 1;
-    x = ntlModulo(a, b);
-    while (b>0){
-        if ((b&1) == 1){
-            exp *= x;
-            exp = ntlModulo(exp, n);
-        }
-        x *= x;
-        x = ntlModulo(x, n);
-        b /= 2;
-    }
-    return exp;
-}
-
-NTL::ZZ modExponentiation2(NTL::ZZ a, NTL::ZZ b, NTL::ZZ n, int k){ //k = numero de bits para representar el numero -1
-    NTL::ZZ d;
-    d = 1;
-    for (; k >= 0; k--){
-        d *= d;
-        d = ntlModulo(d, n);
-        //bit = (a >> k) & 1;
-        if (((b >> k) & 1) == 1){ //bit en la posicion k
-            d *= a;
-            d = ntlModulo(d, n);
-        }
-    }
-    return d;
-}
-
-vector<NTL::ZZ> ecuModulo(NTL::ZZ a, NTL::ZZ b, NTL::ZZ n){ //ax === b mod n
-    NTL::ZZ x, d, k, r;
-    vector<NTL::ZZ> results;
-    d = mcdNTL(a,n);
-    a = inversaNTL(a, n);
-    r = a*b;
-    r = ntlModulo(r, n);
-    for(k = 0; k < d; k++){
-        x = n*k + r;
-        results.push_back(x);
-    }
-    return results;
-}
-
-NTL::ZZ TCR(NTL::ZZ *a, NTL::ZZ *b, NTL::ZZ *n, int tam){ //teorema chino del resto
-	int i;
-	NTL::ZZ P, temp, x, x_0;
-	x_0 = 0;
-	NTL::ZZ p[tam]; //se guardan los pi's
-	NTL::ZZ q[tam]; //se guardan los qi's
-	for (i = 0; i < tam; i++){
-		if (*(a+i) != 1){
-			temp = inversaNTL(*(a+i), *(n+i));
-			*(b+i) = *(b+i) * temp;
-		}
-	}
-	P = 1;
-	for (i = 0; i < tam; i++)
-		P *= *(n+i);
-	for (i = 0; i < tam; i++){ //llenando los pi's y qi's
-		temp = P / *(n+i);
-		p[i] = temp;
-		temp = p[i];
-		temp = ntlModulo(temp, *(n+i));
-		temp = inversaNTL(temp, *(n+i));
-		q[i] = temp;
-		x = *(b+i) * p[i] * q[i];
-		x = ntlModulo(x, P);
-		x_0 += x;
-	}
-	x_0 = ntlModulo(x_0, P);
-	cout << "x = " << x_0 << " + " << P << "k" << endl;
-	return x_0;
+string zToString(const NTL::ZZ &z) {
+	stringstream leString;
+	leString << z;
+	return leString.str();
 }
 
 /*
@@ -320,3 +241,4 @@ NTL::ZZ ga(int tamTotal, int seedSize, int parts, int v){
 	result = getBase10(binary);
 	return result;
 }
+
