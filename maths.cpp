@@ -233,6 +233,38 @@ vector<NTL::ZZ> ecuModulo(NTL::ZZ a, NTL::ZZ b, NTL::ZZ n){ //ax === b mod n
 	return results;
 }
 
+
+NTL::ZZ TCR(NTL::ZZ *a, NTL::ZZ *b, NTL::ZZ *n, int tam){
+    int i;
+    NTL::ZZ P, temp, x, x_0;
+    x_0 = 0;
+    NTL::ZZ p[tam]; //se guardan los pi's
+    NTL::ZZ q[tam]; //se guardan los qi's
+    for (i = 0; i < tam; i++){
+        if (*(a+i) != 1){
+            temp = inversaNTL(*(a+i), *(n+i));
+            *(b+i) = *(b+i) * temp;
+        }
+    }
+    P = 1;
+    for (i = 0; i < tam; i++) ///consiguiendo P
+        P *= *(n+i);
+    for (i = 0; i < tam; i++){ ///llenando los pi's y qi's
+        temp = P / *(n+i);
+        p[i] = temp;
+        temp = p[i];
+        temp = ntlModulo(temp, *(n+i));
+        temp = inversaNTL(temp, *(n+i));
+        q[i] = temp;
+        x = ntlModulo(*(b+i),P) * ntlModulo(p[i], P) * ntlModulo(q[i], P); ///trabajando con clases de equivalencia
+        x = ntlModulo(x, P);
+        x_0 += x;
+    }
+    x_0 = ntlModulo(x_0, P);
+    cout << "x = " << x_0 << " + " << P << "k" << endl;
+    return x_0;
+}
+
 string zToString(const NTL::ZZ &z) {
 	stringstream leString;
 	leString << z;
