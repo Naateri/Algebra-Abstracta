@@ -22,7 +22,7 @@ NTL::ZZ ntlPotenModular(NTL::ZZ a, NTL::ZZ b, NTL::ZZ m);
 NTL::ZZ modExponentiation1(NTL::ZZ a, NTL::ZZ b, NTL::ZZ n);r
 NTL::ZZ modExponentiation2(NTL::ZZ a, NTL::ZZ b, NTL::ZZ n, int k); //k = numero de bits para representar el numero -1
 vector<NTL::ZZ> ecuModulo(NTL::ZZ a, NTL::ZZ b, NTL::ZZ n); //ax === b mod n
-NTL::ZZ TCR(NTL::ZZ *a, NTL::ZZ *b, NTL::ZZ *n, int tam);
+NTL::ZZ TCR(vector<NTL::ZZ> a, vector<NTL::ZZ> b, vector<NTL::ZZ> n);
 std::string zToString(const NTL::ZZ &z);
 //GENERADOR DE ALEATORIOS
 NTL::ZZ getBase10(std::vector<bool> binary);
