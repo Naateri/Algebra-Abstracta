@@ -1,25 +1,24 @@
 #include <string>
 #include <vector>
 #include <NTL/ZZ.h>
-class RSA{
+class RSABlocks{
 private:
-	NTL::ZZ pubKey;
-	NTL::ZZ privKey;
+	NTL::ZZ d;
+	NTL::ZZ e;
 	NTL::ZZ phi;
 	NTL::ZZ p;
 	NTL::ZZ q;
 	NTL::ZZ N;
-	std::string alfabeto;
-	void generarClaves();
+	std::string alfabeto = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 public:
-	RSA();
-	RSA(NTL::ZZ publicKey, NTL::ZZ ene);
-	std::vector<NTL::ZZ> cifrar(std::string msj);
-	std::string descifrar(std::vector<NTL::ZZ> msj);
+	RSABlocks(int bits);
+	RSABlocks(NTL::ZZ, NTL::ZZ);
+	std::string cifrar(std::string msj);
+	std::string descifra_mensaje(std::string c);
 	NTL::ZZ getPubKey();
 	NTL::ZZ getPrivKey();
-	int getAlfSize();
 	void setPubKey(NTL::ZZ);
 	void setPrivKey(NTL::ZZ);
 	NTL::ZZ getN();
+	NTL::ZZ getPhi();
 };

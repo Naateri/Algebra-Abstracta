@@ -1,7 +1,6 @@
 #include <iostream>
 #include <string>
 #include <ctime>
-#include <sstream>
 #include <NTL/ZZ.h>
 #include "rsaBlocks.h"
 #include "maths.h"
@@ -10,26 +9,37 @@ using namespace std;
 
 RSABlocks::RSABlocks(int bits){
 	//testear primalidad de p y q
+	NTL::ZZ pub;
 	this->p = ga(bits, bits/2, 1, 1);
 	this->p = NTL::NextPrime(this->p, 1);
-	this->q = ga(bits, bits/2, 1, 1);
-	this->q = NTL::NextPrime(this->q, 1);
+	//this->p = NTL::NextPrime(this->p, 1);
+	//this->q = ga(bits, bits/2, 1, 1);
+	this->q = NTL::NextPrime(this->p+4, 1);
 	this->N = p*q;
 	this->phi = (p - 1) * (q - 1);
 	do{
-		this->e = ga(bits, bits/2, 1, 1);
-	}while(mcdNTL(e, this->phi) != 1 || e >= this->N); //e debe ser menor que N
-	this->d = inversaNTL(this->e, this->phi);
+		pub = ga(bits, bits/2, 1, 1);
+	}while(mcdNTL(pub, this->phi) != 1 || pub >= this->N); //e debe ser menor que N
+	this->e = pub;
+	this->d = inversaNTL(pub, this->phi);
 }
-RSABlocks::RSABlocks(NTL::ZZ a, NTL::ZZ b){
-	;
+RSABlocks::RSABlocks(NTL::ZZ e, NTL::ZZ N){
+	this->e = e;
+	this->N = N;
 }
 std::string RSABlocks::cifrar(std::string msj){
+	cout << "N: " << this->N << endl;
+	cout << "p: " << this->p << endl;
+	cout << "q: " << this->q << endl;
+	cout << "phi(n): " << this->phi << endl;
+	cout << "e: " << this->e << endl;
+	cout << "d: " << this->d << endl;
 	string leng = zToString(this->N), c, original, tmp;
 	long k = leng.size() - 1; ///k = digitos de N - 1s
+	cout << "N-1: " << k << endl;
 	long i, found;
 	bool euler;
-	NTL::ZZ result, temp, ten;
+	NTL::ZZ result, temp, ten, ten2;
 	temp = this->e - NTL::to_ZZ(1);
 	///Euler: a^{k*phi(N) + 1} === a mod n
 	if (ntlModulo(temp, this->phi) == 0){ ///comprobando que se cumpla lo de arriba
@@ -45,60 +55,75 @@ std::string RSABlocks::cifrar(std::string msj){
 		conv << found;
 		original += conv.str(); ///guardamos ese numero en un string
 	}
-	ten = potenciacion(NTL::to_ZZ(10), k); ///10^(k) para saber si result tiene tantos digitos como k
+	cout << "original: " << original << endl;
+	ten = potenciacion(NTL::to_ZZ(10), NTL::to_ZZ(k)); ///10^(k) para saber si result tiene tantos digitos como k
 	for(i = 0; i < original.size(); i+=k){
 		tmp.clear();
+		ten2 = ten;
 		for(short j = 0; j < k; j++){
 			tmp += original[i+j]; ///saca el bloque de digitos de N - 1
 		}
 		stringstream convi(tmp);
 		convi >> temp; ///string tmp to int (NTL) temp
+		cout << "temp: " << temp << endl;
 		if (euler)
 			result = ntlModulo(temp, this->N); //teorema de euler
 		else
-			result = ntlPotenModular(temp,this->e, this->N); //cifrado en si
-		while (result  < ten){ ///si result es menor a 10^k, se le agrega 0 y se divide entre 10 a 10^k (10^{k-1})
+			result = ntlPotenModular(temp, this->e, this->N); //cifrado en si
+		cout << "result: " << k+1 << " digitos " << result << endl;
+		while (result  < ten2){ ///si result es menor a 10^k, se le agrega 0 y se divide entre 10 a 10^k (10^{k-1})
 			c += "0";
-			ten /= 10;
+			ten2 /= 10;
 		}
 		ostringstream conv;
 		conv << result;
-		c += conv.str();
+		c += conv.str(); ///c + "result"
 	}
 	return c;
 }
 std::string RSABlocks::descifra_mensaje(std::string c){
 	string leng = zToString(this->N), d, ret, tmp;
-	long k = leng.size() - 1;
+	cout << "DESCIFRADO!\n";
+	long k = leng.size(); ///N Digitos
 	long i, found;
 	bool euler;
-	NTL::ZZ result, temp;
-	temp = this->d - NTL::to_ZZ(1);
-	///Euler: a^{k*phi(N) + 1} === a mod n
-	if (ntlModulo(temp, this->phi) == 0){ ///comprobando que se cumpla lo de arriba
-		euler = true; ///si se cumple, result = a mod n
-	} else ///si no, se realiza la potenciacion modular
-		euler = false;
+	cout << "MSJ: " << c << endl;
+	NTL::ZZ result, temp, ten, ten2;
+	ten = potenciacion(NTL::to_ZZ(10), k-NTL::to_ZZ(2)); ///10^{N-2} para ver si el numero es menor a eso
+	///Quisquater-Couvreur
+	NTL::ZZ dp, dq;
+	dp = ntlModulo(this->d, (this->p)-1);
+	dq = ntlModulo(this->d, (this->q)-1);
+	vector<NTL::ZZ> a, b, n;
+	a.push_back(NTL::to_ZZ(1)); a.push_back(NTL::to_ZZ(1));
+	n.push_back(this->p); n.push_back(this->q);
 	for(i = 0; i < c.size(); i+=k){
+		b.clear();
 		tmp.clear();
+		ten2 = ten;
 		for(short j = 0; j < k; j++){
-			tmp += c[i+j];
+			tmp += c[i+j]; ///guardando en tmp de N en N digitos
 		}
 		stringstream convi(tmp);
 		convi >> temp; ///string tmp to int (NTL) temp
-		if (euler)
-			result = ntlModulo(temp, this->N); //teorema de euler
-		else
-			result = ntlPotenModular(temp,this->e, this->N); //cifrado en si
+		cout << "temp: " << temp << endl;
+		b.push_back(ntlPotenModular(temp, dp, p));
+		b.push_back(ntlPotenModular(temp, dq, q));
+		result = TCR(a, b, n);
 		ostringstream conv;
 		conv << result;
+		while (result < ten2){ ///guardando en bloques N-1
+			d += "0";
+			ten2 /= 10;
+		}
+		cout << "result: " << result << endl;
 		d += conv.str();
 	}
-	cout << "d: " << d << endl;
+	cout << "des: " << d << endl;
 	for(i = 0; i < d.size(); i+=2){
 		tmp.clear();
-		for(short j = 0; j < 2; j++){
-			tmp += d[i+j];
+		for(short j = 0; j < 2; j++){ ///j<2 porque 2 es el tamaño mas grande del alfabeto
+			tmp += d[i+j]; ///guardando en tmp de 2 en 2
 		}
 		stringstream convi(tmp);
 		convi >> found;
@@ -107,20 +132,20 @@ std::string RSABlocks::descifra_mensaje(std::string c){
 	return ret;
 }
 NTL::ZZ RSABlocks::getPubKey(){
-	;
+	return this->e;
 }
 NTL::ZZ RSABlocks::getPrivKey(){
-	;
+	return this->d;
 }
-void RSABlocks::setPubKey(NTL::ZZ){
-	;
+void RSABlocks::setPubKey(NTL::ZZ pub){
+	this->e = pub;
 }
-void RSABlocks::setPrivKey(NTL::ZZ){
-	;
+void RSABlocks::setPrivKey(NTL::ZZ priv){
+	this->d = priv;
 }
 NTL::ZZ RSABlocks::getN(){
-	;
+	return this->N;
 }
 NTL::ZZ RSABlocks::getPhi(){
-	;
+	return this->phi;
 }
