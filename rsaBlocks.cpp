@@ -35,7 +35,7 @@ std::string RSABlocks::cifrar(std::string msj){
 	cout << "e: " << this->e << endl;
 	cout << "d: " << this->d << endl;
 	string leng = zToString(this->N), c, original, tmp;
-	long k = leng.size() - 1; ///k = digitos de N - 1s
+	long k = leng.size() - 1, modd; ///k = digitos de N - 1s
 	cout << "N-1: " << k << endl;
 	long i, found;
 	bool euler;
@@ -54,6 +54,13 @@ std::string RSABlocks::cifrar(std::string msj){
 		ostringstream conv;
 		conv << found;
 		original += conv.str(); ///guardamos ese numero en un string
+	}
+	modd = modulo(original.size(), k);
+	while(modd != 0){
+		cout << "mod: " << modd << endl;
+		original += "26";
+		modd = modulo(original.size(), k);
+		cout << "mod: " << modd << endl;
 	}
 	cout << "original: " << original << endl;
 	ten = potenciacion(NTL::to_ZZ(10), NTL::to_ZZ(k)); ///10^(k) para saber si result tiene tantos digitos como k
@@ -79,6 +86,7 @@ std::string RSABlocks::cifrar(std::string msj){
 		conv << result;
 		c += conv.str(); ///c + "result"
 	}
+	modd = modulo(c.size() , k+1);
 	return c;
 }
 std::string RSABlocks::descifra_mensaje(std::string c){
