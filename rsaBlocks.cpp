@@ -146,3 +146,5 @@ void RSABlocks::setP(NTL::ZZ p){
 void RSABlocks::setQ(NTL::ZZ q){
 	this->q = q;
 }
+NTL::ZZ RSABlocks::getQ(){return this->q;}
+NTL::ZZ RSABlocks::getP(){return this->p;}

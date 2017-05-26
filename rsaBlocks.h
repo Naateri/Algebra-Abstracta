@@ -10,7 +10,7 @@ private:
 	NTL::ZZ q;
 	NTL::ZZ N;
 	std::string alfabeto = "abcdefghijklmnñopqrstuvwxyz ABCDEFGHIJKLMNÑOPQRSTUVWXYZ0123456789.,;:-_()@{}+/";
-	public:
+public:
 	RSABlocks(int bits);
 	RSABlocks(NTL::ZZ, NTL::ZZ);
 	std::string cifrar(std::string msj);
@@ -23,4 +23,6 @@ private:
 	void setN(NTL::ZZ);
 	void setP(NTL::ZZ p);
 	void setQ(NTL::ZZ q);
+	NTL::ZZ RSABlocks::getQ();
+	NTL::ZZ RSABlocks::getP();
 };
