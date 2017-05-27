@@ -14,8 +14,8 @@ RSABlocks::RSABlocks(int bits){
 	this->p = ga(bits, bits/2, 1, 1);
 	this->p = NTL::NextPrime(this->p, 1);
 	//this->p = NTL::NextPrime(this->p, 1);
-	//this->q = ga(bits, bits/2, 1, 1);
-	this->q = NTL::NextPrime(this->p+5, 1);
+	this->q = ga(bits, bits/2, 1, 1);
+	this->q = NTL::NextPrime(this->q, 1);
 	this->N = p*q;
 	this->phi = (p - 1) * (q - 1);
 	do{
@@ -27,6 +27,7 @@ RSABlocks::RSABlocks(int bits){
 RSABlocks::RSABlocks(NTL::ZZ ee, NTL::ZZ eN){
 	this->e = ee;
 	this->N = eN;
+	this->phi = this->e*this->N; ///valor temporal para no tener que modificar cifrado y euler
 }
 std::string RSABlocks::cifrar(std::string msj){
 	string leng = zToString(this->N), c, original, tmp;
@@ -81,7 +82,7 @@ std::string RSABlocks::cifrar(std::string msj){
 std::string RSABlocks::descifra_mensaje(std::string c){
 	string leng = zToString(this->N), d, ret, tmp;
 	long k = leng.size(); ///N Digitos
-	long i, found;
+	long i, found;//, hundred = 100, hun;
 	NTL::ZZ result, temp, ten, ten2;
 	ten = potenciacion(NTL::to_ZZ(10), k-NTL::to_ZZ(2)); ///10^{N-2} para ver si el numero es menor a eso
 	///Quisquater-Couvreur
@@ -92,8 +93,9 @@ std::string RSABlocks::descifra_mensaje(std::string c){
 	a.push_back(NTL::to_ZZ(1)); a.push_back(NTL::to_ZZ(1));
 	n.push_back(this->p); n.push_back(this->q);
 	for(i = 0; i < c.size(); i+=k){
-		b.clear();
-		tmp.clear();
+		b.clear(); ///limpiando valores anteriores del vector
+		tmp.clear(); ///borrando datos del string        //ten2 = ten;
+		//hun = hundred;
 		ten2 = ten;
 		for(short j = 0; j < k; j++){
 			tmp += c[i+j]; ///guardando en tmp de N en N digitos
@@ -140,11 +142,11 @@ NTL::ZZ RSABlocks::getN(){
 void RSABlocks::setN(NTL::ZZ n){
 	this->N = n;
 }
-void RSABlocks::setP(NTL::ZZ p){
-	this->p = p;
+void RSABlocks::setP(NTL::ZZ pe){
+	this->p = pe;
 }
-void RSABlocks::setQ(NTL::ZZ q){
-	this->q = q;
+void RSABlocks::setQ(NTL::ZZ qu){
+	this->q = qu;
 }
 NTL::ZZ RSABlocks::getQ(){return this->q;}
 NTL::ZZ RSABlocks::getP(){return this->p;}

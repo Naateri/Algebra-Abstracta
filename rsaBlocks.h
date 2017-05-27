@@ -23,6 +23,6 @@ public:
 	void setN(NTL::ZZ);
 	void setP(NTL::ZZ p);
 	void setQ(NTL::ZZ q);
-	NTL::ZZ RSABlocks::getQ();
-	NTL::ZZ RSABlocks::getP();
+	NTL::ZZ getQ();
+	NTL::ZZ getP();
 };
