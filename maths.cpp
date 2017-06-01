@@ -248,7 +248,8 @@ vector<NTL::ZZ> ecuModulo(NTL::ZZ a, NTL::ZZ b, NTL::ZZ n){ //ax === b mod n
 NTL::ZZ modExponentiation1(NTL::ZZ a, NTL::ZZ b, NTL::ZZ n){ //también la de la práctica
 	NTL::ZZ exp, x;
 	exp = 1;
-	x = ntlModulo(a, b);
+	//x = ntlModulo(a, b);
+	x = a;
 	while (b>0){
 		if ((b&1) == 1){
 			exp *= x;
