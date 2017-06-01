@@ -7,7 +7,6 @@
 
 using namespace std;
 
-
 RSABlocks::RSABlocks(int bits){
 	//testear primalidad de p y q
 	NTL::ZZ pub;
@@ -67,7 +66,7 @@ std::string RSABlocks::cifrar(std::string msj){
 		if (euler)
 			result = ntlModulo(temp, this->N); //teorema de euler
 		else
-			result = ntlPotenModular(temp, this->e, this->N); //cifrado en si
+			result = modExponentiation1(temp, this->e, this->N); //cifrado en si
 		while (result  < ten2){ ///si result es menor a 10^k, se le agrega 0 y se divide entre 10 a 10^k (10^{k-1})
 			c += "0";
 			ten2 /= 10;
@@ -76,7 +75,7 @@ std::string RSABlocks::cifrar(std::string msj){
 		conv << result;
 		c += conv.str(); ///c + "result"
 	}
-	modd = modulo(c.size() , k+1);
+	//modd = modulo(c.size() , k+1);
 	return c;
 }
 std::string RSABlocks::descifra_mensaje(std::string c){
@@ -95,15 +94,14 @@ std::string RSABlocks::descifra_mensaje(std::string c){
 	for(i = 0; i < c.size(); i+=k){
 		b.clear(); ///limpiando valores anteriores del vector
 		tmp.clear(); ///borrando datos del string        //ten2 = ten;
-		//hun = hundred;
 		ten2 = ten;
 		for(short j = 0; j < k; j++){
 			tmp += c[i+j]; ///guardando en tmp de N en N digitos
 		}
 		stringstream convi(tmp);
 		convi >> temp; ///string tmp to int (NTL) temp
-		b.push_back(ntlPotenModular(temp, dp, p));
-		b.push_back(ntlPotenModular(temp, dq, q));
+		b.push_back(modExponentiation1(temp, dp, p));
+		b.push_back(modExponentiation1(temp, dq, q));
 		result = TCR(a, b, n);
 		ostringstream conv;
 		conv << result;
