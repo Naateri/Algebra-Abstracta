@@ -33,20 +33,42 @@ vector<long> algoritmo(long a, long b){
 		x = s; y = t;
 	}
 	v = (g - a*u)/b;
-	if (u < 0)
-		u += b;
+	/*if (u < 0)
+		u += b;*/
 	result.push_back(g);
 	result.push_back(u);
 	result.push_back(v);
 	return result;
 }
+pair<long, long> mcdExtendido(long a, long b){
+	long r, r1 = a, r2 = b, x, x1 = 1, x2 = 0, y, y1 = 0, y2 = 1, q;
+	pair<long, long> moduloo;
+	while (r2 != 0){
+		moduloo = modulo(r1, r2);
+		q = moduloo.first; //EUCLIDES
+		r = moduloo.second; //EUCLIDES
+		r1 = r2;
+		r2 = r;
+		x = x1 - q*x2;
+		x1 = x2;
+		x2 = x;
+		y = y1 - q*y2;
+		y1 = y2;
+		y2 = y;
+	}
+	pair<long, long> resultados(x1,y1); //resultados.first = x (x1 = x)
+	return resultados; //resultados.second = y (y1 = y)
+}
 
 int main(){
 	vector<long> i;
+	pair<long, long> I;
 	vector<long> ii;
 	vector<long> iii;
 	vector<long> iv;
 	i = algoritmo(527, 1258);
+	I = mcdExtendido(527, 1258);
+	
 	ii = algoritmo(228, 1056);
 	iii = algoritmo(163961, 167181);
 	iv = algoritmo(3892394, 239847);
@@ -54,6 +76,9 @@ int main(){
 	cout << "g: " << i.at(0) << endl;
 	cout << "u: " << i.at(1) << endl;
 	cout << "v: " << i.at(2) << endl;
+	cout << "I: \n";
+	cout << "x: " << I.first << endl;
+	cout << "y: " << I.second << endl;
 	cout << "ii: (228, 1056)\n";
 	cout << "g: " << ii.at(0) << endl;
 	cout << "u: " << ii.at(1) << endl;
