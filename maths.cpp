@@ -35,7 +35,7 @@ pair<int, int> moduloQandR(int a, int n){
 	r = a - (q*n);
 	if (r<0)
 		;//r+=n;
-	pair<int, int> values(r, q);
+	pair<int, int> values(q,r);
 	return values;
 }
 
@@ -45,7 +45,7 @@ pair<NTL::ZZ, NTL::ZZ> moduloQandRntl(NTL::ZZ a, NTL::ZZ n){
 	r = a - (q*n);
 	if (r<0)
 		;//r+=n;
-	pair<NTL::ZZ, NTL::ZZ> values(r, q);
+	pair<NTL::ZZ, NTL::ZZ> values(q,r);
 	return values;
 }
 
@@ -69,50 +69,83 @@ NTL::ZZ mcdNTL(NTL::ZZ a, NTL::ZZ b){
 	return a;
 }
 
-pair<long, long> mcdExtendido(long a, long b){
-	long r, r1 = a, r2 = b, x, x1 = 1, x2 = 0, y, y1 = 0, y2 = 1, q;
-	pair<long, long> modulo;
-	while (r2 != 0){
-		modulo = moduloQandR(r1, r2);
-		q = modulo.second; //EUCLIDES
-		r = modulo.first; //EUCLIDES
-		r1 = r2;
-		r2 = r;
-		x = x1 - q*x2;
-		x1 = x2;
-		x2 = x;
-		y = y1 - q*y2;
-		y1 = y2;
-		y2 = y;
+/* pair<long, long> mcdExtendido(long a, long b){
+long r, r1 = a, r2 = b, x, x1 = 1, x2 = 0, y, y1 = 0, y2 = 1, q;
+pair<long, long> modulo;
+while (r2 != 0){
+modulo = moduloQandR(r1, r2);
+q = modulo.second; //EUCLIDES
+r = modulo.first; //EUCLIDES
+r1 = r2;
+r2 = r;
+x = x1 - q*x2;
+x1 = x2;
+x2 = x;
+y = y1 - q*y2;
+y1 = y2;
+y2 = y;
+}
+pair<long, long> resultados(x1,y1); //resultados.first = x (x1 = x)
+return resultados; //resultados.second = y (y1 = y)
+}
+*/
+vector<long> mcdExtendido(long a, long b){
+	vector<long> result;
+	if (b == 0){
+		for (int i = 0; i < 3; i++)
+			result.push_back(0);
+		return result;
 	}
-	pair<long, long> resultados(x1,y1); //resultados.first = x (x1 = x)
-	return resultados; //resultados.second = y (y1 = y)
+	long u = 1, g = a, x = 0, y = b, s, t, q, v;
+	pair<long, long> division;
+	while (y != 0){
+		division = moduloQandR(g, y);
+		q = division.first;
+		t = division.second;
+		s = u - q*x;
+		u = x; g = y;
+		x = s; y = t;
+	}
+	v = (g - a*u)/b;
+	/*if (u < 0)
+	u += b;*/
+	result.push_back(g);
+	result.push_back(u);
+	result.push_back(v);
+	return result;
 }
 
-pair<NTL::ZZ, NTL::ZZ> mcdExtendidoNTL(NTL::ZZ a, NTL::ZZ b){
-	NTL::ZZ r, r1 = a, r2 = b, x, x1, x2, y, y1, y2, q;
-	x1 = 1; x2 = 0; y1 = 0; y2 = 1;
-	pair<NTL::ZZ, NTL::ZZ> modulo;
-	while (r2 != 0){
-		modulo = moduloQandRntl(r1, r2);
-		q = modulo.second; //EUCLIDES
-		r = modulo.first; //EUCLIDES
-		r1 = r2;
-		r2 = r;
-		x = x1 - q*x2;
-		x1 = x2;
-		x2 = x;
-		y = y1 - q*y2;
-		y1 = y2;
-		y2 = y;
+vector<NTL::ZZ> mcdExtendidoNTL(NTL::ZZ a, NTL::ZZ b){
+	vector<NTL::ZZ> result;
+	if (b == 0){
+		for (int i = 0; i < 3; i++)
+			result.push_back(NTL::to_ZZ(0));
+		return result;
 	}
-	pair<NTL::ZZ, NTL::ZZ> resultados(x1,y1); //resultados.first = x (x1 = x)
-	return resultados; //resultados.second = y (y1 = y)
+	NTL::ZZ u, g, x, y, s, t, q, v;
+	g = a; y = b; u = 1; x = 0;
+	pair<NTL::ZZ, NTL::ZZ> division;
+	while (y != 0){
+		division = moduloQandRntl(g, y);
+		q = division.first;
+		t = division.second;
+		s = u - q*x;
+		u = x; g = y;
+		x = s; y = t;
+	}
+	v = (g - a*u)/b;
+	/*if (u < 0)
+	u += b;*/
+	result.push_back(g);
+	result.push_back(u);
+	result.push_back(v);
+	return result;
 }
 
 long inversa(long a, long n){
 	long x;
-	x = mcdExtendido(a, n).first;
+	vector<long> euclides = mcdExtendido(a, n);
+	x = euclides.at(1);
 	if (x < 0)
 		x = modulo(x, n);
 	return x;
@@ -123,7 +156,8 @@ NTL::ZZ inversaNTL(NTL::ZZ a, NTL::ZZ n){
 	/*if(NTL::ProbPrime(a, 1) && ntlModulo(n, a) != 0){ //teorema de fermat: si n es primo y n no divide a a
 	return ntlPotenModular(a, n-2, n);
 	}*/
-	num = mcdExtendidoNTL(a, n).first;
+	vector<NTL::ZZ> euclides = mcdExtendidoNTL(a, n);
+	num = euclides.at(1);
 	if (num < 0)
 		num = ntlModulo(num, n);
 	return num;
@@ -197,37 +231,6 @@ NTL::ZZ ntlPotenModular(NTL::ZZ a, NTL::ZZ b, NTL::ZZ m){
 	return res;
 }
 
-NTL::ZZ modExponentiation1(NTL::ZZ a, NTL::ZZ b, NTL::ZZ n){
-	NTL::ZZ exp, x;
-	exp = 1;
-	x = ntlModulo(a, b);
-	while (b>0){
-		if ((b&1) == 1){
-			exp *= x;
-			exp = ntlModulo(exp, n);
-		}
-		x *= x;
-		x = ntlModulo(x, n);
-		b /= 2;
-	}
-	return exp;
-}
-
-NTL::ZZ modExponentiation2(NTL::ZZ a, NTL::ZZ b, NTL::ZZ n, int k){ //k = numero de bits para representar el numero -1
-	NTL::ZZ d;
-	d = 1;
-	for (; k >= 0; k--){
-		d *= d;
-		d = ntlModulo(d, n);
-		//bit = (a >> k) & 1;
-		if (((b >> k) & 1) == 1){ //bit en la posicion k
-			d *= a;
-			d = ntlModulo(d, n);
-		}
-	}
-	return d;
-}
-
 vector<NTL::ZZ> ecuModulo(NTL::ZZ a, NTL::ZZ b, NTL::ZZ n){ //ax === b mod n
 	NTL::ZZ x, d, k, r;
 	vector<NTL::ZZ> results;
@@ -242,7 +245,7 @@ vector<NTL::ZZ> ecuModulo(NTL::ZZ a, NTL::ZZ b, NTL::ZZ n){ //ax === b mod n
 	return results;
 }
 
-NTL::ZZ modExponentiation1(NTL::ZZ a, NTL::ZZ b, NTL::ZZ n){
+NTL::ZZ modExponentiation1(NTL::ZZ a, NTL::ZZ b, NTL::ZZ n){ //también la de la práctica
 	NTL::ZZ exp, x;
 	exp = 1;
 	x = ntlModulo(a, b);
@@ -253,7 +256,7 @@ NTL::ZZ modExponentiation1(NTL::ZZ a, NTL::ZZ b, NTL::ZZ n){
 		}
 		x *= x;
 		x = ntlModulo(x, n);
-		b /= 2;
+		b >>= 1;
 	}
 	return exp;
 }
@@ -359,4 +362,5 @@ NTL::ZZ ga(int tamTotal, int seedSize, int parts, int v){
 	result = getBase10(binary);
 	return result;
 }
+
 

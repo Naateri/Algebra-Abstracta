@@ -12,14 +12,14 @@ std::pair<int, int> moduloQandR(int a, int n);
 std::pair<NTL::ZZ, NTL::ZZ> moduloQandRntl(NTL::ZZ a, NTL::ZZ n);
 long mcd(long a, long b);
 NTL::ZZ mcdNTL(NTL::ZZ a, NTL::ZZ b);
-std::pair<long, long> mcdExtendido(long a, long b);
-std::pair<NTL::ZZ, NTL::ZZ> mcdExtendidoNTL(NTL::ZZ a, NTL::ZZ b);
+std::vector<long> mcdExtendido(long a, long b);
+std::vector<NTL::ZZ> mcdExtendidoNTL(NTL::ZZ a, NTL::ZZ b);
 long inversa(long, long);
 NTL::ZZ inversaNTL(NTL::ZZ a, NTL::ZZ n);
 NTL::ZZ potenciacion(int, int);
 long potenModular(long, long, long);
 NTL::ZZ ntlPotenModular(NTL::ZZ a, NTL::ZZ b, NTL::ZZ m);
-NTL::ZZ modExponentiation1(NTL::ZZ a, NTL::ZZ b, NTL::ZZ n);r
+NTL::ZZ modExponentiation1(NTL::ZZ a, NTL::ZZ b, NTL::ZZ n);
 NTL::ZZ modExponentiation2(NTL::ZZ a, NTL::ZZ b, NTL::ZZ n, int k); //k = numero de bits para representar el numero -1
 vector<NTL::ZZ> ecuModulo(NTL::ZZ a, NTL::ZZ b, NTL::ZZ n); //ax === b mod n
 NTL::ZZ TCR(vector<NTL::ZZ> a, vector<NTL::ZZ> b, vector<NTL::ZZ> n);
