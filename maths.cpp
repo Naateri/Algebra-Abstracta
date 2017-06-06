@@ -364,4 +364,17 @@ NTL::ZZ ga(int tamTotal, int seedSize, int parts, int v){
 	return result;
 }
 
+/* PRIMITIVE ROOT*/
 
+NTL::ZZ findRoot(NTL::ZZ p){
+	NTL::ZZ q, found, g, i;
+	q = (p-NTL::to_ZZ(1));
+	q >>= 1;
+	for (i = 1; i < p-1; i++){
+		g = p - i;
+		if ((ntlModulo(g*g, p) != 1) && (modExponentiation1(g, q, p) != 1)){
+			break;
+		}
+	}
+	return g;
+}

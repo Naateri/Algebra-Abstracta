@@ -29,4 +29,6 @@ NTL::ZZ getBase10(std::vector<bool> binary);
 void rightShift(std::vector<bool> &binary, int shift);
 void leftShift(std::vector<bool> &binary, int shift);
 NTL::ZZ ga(int tamTotal, int seedSize, int parts, int v);
+/* PRIMITIVE ROOT*/
+NTL::ZZ findRoot(NTL::ZZ p);
 #endif
