@@ -12,15 +12,16 @@ using namespace std;
 
 ElGamal::ElGamal(int bits){
 	NTL::ZZ q;
+	///q = ga(bits, bits/2, 1, 1);
+	///do{
+	///q++;
+	///q = ga(bits, bits/2, 1, 1);
 	q = ga(bits, bits/2, 1, 1);
-	do{
-		q++;
-		//q = ga(bits, bits/2, 1, 1);
-		q = NTL::NextPrime(q, 1);
-		//this->p = (q << 1) + 1;
-		//cout << "p: " << this->p << endl;
-		cout << "q: " << q << endl;
-	}while (NTL::ProbPrime((q<<1) + 1, 1) != 1);
+	q = NTL::NextPrime(q, 1);
+	//this->p = (q << 1) + 1;
+	//cout << "p: " << this->p << endl;
+	cout << "q: " << q << endl;
+	///}while (NTL::ProbPrime((q<<1) + 1, 1) != 1);
 	//this->p = ga(bits, bits/2, 1, 1);
 	//this->p = NTL::NextPrime(p, 1);
 	this->p = (q<<1) + 1;
