@@ -20,12 +20,11 @@ ElGamal::ElGamal(int bits){
 	q = NTL::NextPrime(q, 1);
 	//this->p = (q << 1) + 1;
 	//cout << "p: " << this->p << endl;
-	cout << "q: " << q << endl;
 	///}while (NTL::ProbPrime((q<<1) + 1, 1) != 1);
 	//this->p = ga(bits, bits/2, 1, 1);
 	//this->p = NTL::NextPrime(p, 1);
 	this->p = (q<<1) + 1;
-	cout << "final p: " << this->p << endl;
+	//cout << "final p: " << this->p << endl;
 	this->e = findRoot(p);
 	do{
 		this->d = ga(bits, bits/2, 1, 1);
@@ -133,3 +132,6 @@ NTL::ZZ ElGamal::getP() {return this->p;}
 NTL::ZZ ElGamal::getE() {return this->e;}
 NTL::ZZ ElGamal::getE2() {return this->e_2;}
 NTL::ZZ ElGamal::getC1() {return this->C_1;}
+NTL::ZZ ElGamal::getD() {return this->d;}
+void ElGamal::setP(NTL::ZZ p) {this->p = p;}
+void ElGamal::setD(NTL::ZZ d) {this->d = d;}
