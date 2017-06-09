@@ -44,7 +44,7 @@ ElGamal::ElGamal(NTL::ZZ p, NTL::ZZ e, NTL::ZZ e2, int bits){
 
 string ElGamal::cifrar(string msj){
 	string leng = zToString(this->p), c, original, tmp;
-	long k = leng.size() - 1, modd; ///k = digitos de N - 1s
+	long k = leng.size() - 1, modd, lengP; ///k = digitos de N - 1s
 	long i, found;
 	bool euler;
 	NTL::ZZ result, temp, ten, ten2;
@@ -72,10 +72,6 @@ string ElGamal::cifrar(string msj){
 		}
 		stringstream convi(tmp);
 		convi >> temp; ///string tmp to int (NTL) temp
-		/*if (euler)
-		result = ntlModulo(temp, this->N); //teorema de euler
-		else
-		result = modExponentiation1(temp, this->e, this->N); //cifrado en si*/
 		result = ntlModulo((this->K_M * temp), this->p);
 		while (result  < ten2){ ///si result es menor a 10^k, se le agrega 0 y se divide entre 10 a 10^k (10^{k-1})
 			c += "0";
@@ -85,25 +81,36 @@ string ElGamal::cifrar(string msj){
 		conv << result;
 		c += conv.str(); ///c + "result"
 	}
-	//modd = modulo(c.size() , k+1);
+	string c1 = zToString(this->C_1), c0;
+	k = c1.size();
+	while(k < leng.size()){
+		c0 += "0";
+		k++;
+	}
+	c0 += c1;
+	c = c0 + c;
 	return c;
 }
 
-string ElGamal::descifra_mensaje(string c, NTL::ZZ c_1){
-	string leng = zToString(this->p), d, ret, tmp;
-	long k = leng.size(); ///N Digitos
-	long i, found;//, hundred = 100, hun;
+string ElGamal::descifra_mensaje(string c){
+	string leng = zToString(this->p), d, ret, tmp, c1;
+	long k = leng.size(); ///P Digitos
+	long i, found;
 	NTL::ZZ result, temp, ten, ten2, invKM;
-	this->C_1 = c_1;
+	for (i = 0; i < k; i++){
+		c1 += c[i];
+	}
+	stringstream convi(c1);
+	convi >> this->C_1; ///c1 (string) a C_1 (ZZ)
+	cout << "C1: " << this->C_1 << endl;
 	this->K_M = modExponentiation1(this->C_1, this->d, this->p);
 	invKM = inversaNTL(this->K_M, this->p);
 	ten = potenciacion(NTL::to_ZZ(10), k-NTL::to_ZZ(2)); ///10^{N-2} para ver si el numero es menor a eso
-	///Quisquater-Couvreur
-	for(i = 0; i < c.size(); i+=k){
+	for(i = k; i < c.size(); i+=k){
 		tmp.clear(); ///borrando datos del string
 		ten2 = ten;
 		for(short j = 0; j < k; j++){
-			tmp += c[i+j]; ///guardando en tmp de N en N digitos
+			tmp += c[i+j]; ///guardando en tmp de P en P digitos
 		}
 		stringstream convi(tmp);
 		convi >> temp; ///string tmp to int (NTL) temp
@@ -135,3 +142,4 @@ NTL::ZZ ElGamal::getC1() {return this->C_1;}
 NTL::ZZ ElGamal::getD() {return this->d;}
 void ElGamal::setP(NTL::ZZ p) {this->p = p;}
 void ElGamal::setD(NTL::ZZ d) {this->d = d;}
+

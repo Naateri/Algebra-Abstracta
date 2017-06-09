@@ -9,12 +9,12 @@ private:
 	NTL::ZZ r; //emisor
 	NTL::ZZ C_1;
 	NTL::ZZ K_M;
-	std::string alfabeto = "abcdefghijklmnñopqrstuvwxyz ABCDEFGHIJKLMNÑOPQRSTUVWXYZ0123456789.;:-_()@{}+/";
+	std::string alfabeto = "0123456789 abcdefghijklmnopqrstuvwxyz.,ABCDEFHIJKLMNOPQRSTUVWXYZ";
 public:
 	ElGamal(int bits);
 	ElGamal(NTL::ZZ p, NTL::ZZ e, NTL::ZZ e2, int);
 	std::string cifrar(std::string msj);
-	std::string descifra_mensaje(std::string c, NTL::ZZ c_1);
+	std::string descifra_mensaje(std::string c);
 	NTL::ZZ getP();
 	NTL::ZZ getE();
 	NTL::ZZ getE2();
