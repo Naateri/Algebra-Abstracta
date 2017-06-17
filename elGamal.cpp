@@ -43,43 +43,46 @@ ElGamal::ElGamal(NTL::ZZ p, NTL::ZZ e, NTL::ZZ e2, int bits){
 }
 
 string ElGamal::cifrar(string msj){
-	string leng = zToString(this->p), c, original, tmp;
-	long k = leng.size() - 1, modd, lengP; ///k = digitos de N - 1s
+	string leng = zToString(this->p), c, original, tmp, alfLeng = zToString(NTL::to_ZZ(this->alfabeto.size()));
+	long k = leng.size() - 1, modd, lengP, lengAlf = alfLeng.size()-1; ///k = digitos de N - 1s
 	long i, found;
-	bool euler;
 	NTL::ZZ result, temp, ten, ten2;
+	ten = potenciacion(NTL::to_ZZ(10), NTL::to_ZZ(lengAlf));
 	for (i = 0; i < msj.size(); i++){ ///llenando los bloques con 2 digitos (tam de la letra mas grande)
 		found = this->alfabeto.find(msj[i]);
-		if (found < 10){ ///si es menor a 10, le metemos un 0 al comienzo
+		ten2 = ten;
+		if (found < ten2){ ///si es menor a 10, le metemos un 0 al comienzo
 			original += "0";
+			ten2 /= 10;
 		}
-		ostringstream conv;
+		original += zToString(NTL::to_ZZ(found));
+		/*ostringstream conv;
 		conv << found;
-		original += conv.str(); ///guardamos ese numero en un string
+		original += conv.str(); ///guardamos ese numero en un string*/
 	}
 	modd = modulo(original.size(), k);
 	while(modd != 0){ ///agrega "26" (espacio) mientras la long del texto
 		original += "26"; ///en numeros no sea divisible entre la long de N
 		modd = modulo(original.size(), k);
 	}
-	cout << "original: " << original << endl;
+	cout << "Original: " << original << endl;
 	ten = potenciacion(NTL::to_ZZ(10), NTL::to_ZZ(k)); ///10^(k) para saber si result tiene tantos digitos como k
 	for(i = 0; i < original.size(); i+=k){
 		tmp.clear();
 		ten2 = ten;
-		for(short j = 0; j < k; j++){
-			tmp += original[i+j]; ///saca el bloque de digitos de N - 1
-		}
-		stringstream convi(tmp);
-		convi >> temp; ///string tmp to int (NTL) temp
+		tmp = original.substr(i, k);
+		/*stringstream convi(tmp);
+		convi >> temp; ///string tmp to int (NTL) temp*/
+		temp = stringToZZ(tmp);
 		result = ntlModulo((this->K_M * temp), this->p);
 		while (result  < ten2){ ///si result es menor a 10^k, se le agrega 0 y se divide entre 10 a 10^k (10^{k-1})
 			c += "0";
 			ten2 /= 10;
 		}
-		ostringstream conv;
+		/*ostringstream conv;
 		conv << result;
-		c += conv.str(); ///c + "result"
+		c += conv.str(); ///c + "result"*/
+		c += zToString(result);
 	}
 	string c1 = zToString(this->C_1), c0;
 	k = c1.size();
@@ -93,27 +96,26 @@ string ElGamal::cifrar(string msj){
 }
 
 string ElGamal::descifra_mensaje(string c){
-	string leng = zToString(this->p), d, ret, tmp, c1;
-	long k = leng.size(); ///P Digitos
+	string leng = zToString(this->p), d, ret, tmp, c1, alfLeng = zToString(NTL::to_ZZ(this->alfabeto.size()));
+	long k = leng.size(), lengAlf = alfLeng.size(); ///P Digitos
 	long i, found;
 	NTL::ZZ result, temp, ten, ten2, invKM;
 	for (i = 0; i < k; i++){
 		c1 += c[i];
 	}
-	stringstream convi(c1);
-	convi >> this->C_1; ///c1 (string) a C_1 (ZZ)
-	cout << "C1: " << this->C_1 << endl;
+	/*stringstream convi(c1);
+	convi >> this->C_1; ///c1 (string) a C_1 (ZZ)*/
+	this->C_1 = stringToZZ(c1);
 	this->K_M = modExponentiation1(this->C_1, this->d, this->p);
 	invKM = inversaNTL(this->K_M, this->p);
 	ten = potenciacion(NTL::to_ZZ(10), k-NTL::to_ZZ(2)); ///10^{N-2} para ver si el numero es menor a eso
 	for(i = k; i < c.size(); i+=k){
 		tmp.clear(); ///borrando datos del string
 		ten2 = ten;
-		for(short j = 0; j < k; j++){
-			tmp += c[i+j]; ///guardando en tmp de P en P digitos
-		}
-		stringstream convi(tmp);
-		convi >> temp; ///string tmp to int (NTL) temp
+		tmp = c.substr(i, k);
+		/*stringstream convi(tmp);
+		convi >> temp; ///string tmp to int (NTL) temp*/
+		temp = stringToZZ(tmp);
 		result = ntlModulo((temp * invKM), this->p);
 		ostringstream conv;
 		conv << result;
@@ -123,13 +125,12 @@ string ElGamal::descifra_mensaje(string c){
 		}
 		d += conv.str();
 	}
-	for(i = 0; i < d.size(); i+=2){
+	for(i = 0; i < d.size(); i+=lengAlf){
 		tmp.clear();
-		for(short j = 0; j < 2; j++){ ///j<2 porque 2 es el tamaño mas grande del alfabeto
-			tmp += d[i+j]; ///guardando en tmp de 2 en 2
-		}
-		stringstream convi(tmp);
-		convi >> found;
+		tmp = d.substr(i, lengAlf);
+		/*stringstream convi(tmp);
+		convi >> found;*/
+		found = NTL::to_long(stringToZZ(tmp));
 		ret += this->alfabeto[found];
 	}
 	return ret;
@@ -142,4 +143,3 @@ NTL::ZZ ElGamal::getC1() {return this->C_1;}
 NTL::ZZ ElGamal::getD() {return this->d;}
 void ElGamal::setP(NTL::ZZ p) {this->p = p;}
 void ElGamal::setD(NTL::ZZ d) {this->d = d;}
-
