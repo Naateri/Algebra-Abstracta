@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <NTL/ZZ.h>
+#include <opencv2/opencv.hpp>
 #ifndef MATHS_H_INCLUDED
 #define MATHS_H_INCLUDED
 int pc1[56] = {57, 49, 41, 33, 25, 17, 9, 1, 58, 50, 42, 34, 26, 18, 10, 2, 59, 51, 43, 35, 27, 19, 11, 3, 60, 52, 44, 36,
@@ -30,6 +31,7 @@ vector<NTL::ZZ> ecuModulo(NTL::ZZ a, NTL::ZZ b, NTL::ZZ n); //ax === b mod n
 NTL::ZZ TCR(vector<NTL::ZZ> a, vector<NTL::ZZ> b, vector<NTL::ZZ> n);
 std::string zToString(const NTL::ZZ &z);
 //GENERADOR DE ALEATORIOS
+int rdtsc();
 NTL::ZZ getBase10(std::vector<bool> binary);
 void rightShift(std::vector<bool> &binary, int shift);
 void leftShift(std::vector<bool> &binary, int shift);
@@ -37,4 +39,7 @@ NTL::ZZ ga(int tamTotal, int seedSize, int parts, int v);
 NTL::ZZ DES(NTL::ZZ num);
 /* PRIMITIVE ROOT*/
 NTL::ZZ findRoot(NTL::ZZ p);
+/*BUILDING IMAGE*/
+std::string getRGB(cv::Mat img);
+void getImg(std::string RGB, cv::Mat &result);
 #endif

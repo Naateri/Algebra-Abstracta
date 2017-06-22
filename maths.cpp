@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <NTL/ZZ.h>
+#include <opencv2/opencv.hpp>
 
 using namespace std;
 
@@ -21,6 +22,7 @@ long modulo(long a, long n){ //a mod n
 }
 
 NTL::ZZ ntlModulo(NTL::ZZ a, NTL::ZZ n){
+	if ((a < n) && (a>=0)) return a;
 	NTL::ZZ q, r;
 	q = a/n;
 	r = a - (q*n);
@@ -158,8 +160,10 @@ NTL::ZZ inversaNTL(NTL::ZZ a, NTL::ZZ n){
 	}*/
 	vector<NTL::ZZ> euclides = mcdExtendidoNTL(a, n);
 	num = euclides.at(1);
-	if (num < 0)
-		num = ntlModulo(num, n);
+	if (num < 0){
+		//num = ntlModulo(num, n);
+		num += n;
+	}
 	return num;
 }
 
@@ -319,6 +323,10 @@ string zToString(const NTL::ZZ &z) {
 /*
 Generador de aleatorios*/
 
+int rdtsc(){
+	__asm__ __volatile__("rdtsc");
+}
+
 NTL::ZZ getBase10(vector<bool> binary){
 	NTL::ZZ ret;
 	int pot = binary.size() - 1;
@@ -346,7 +354,8 @@ NTL::ZZ ga(int tamTotal, int seedSize, int parts, int v){
 	long seed;
 	int i, j, sizeOfPart;
 	long s;
-	seed = time(NULL);
+	//seed = time(NULL);
+	seed = rdtsc();
 	bool res;
 	NTL::ZZ result;
 	for (i = 0; i < seedSize; i++){ //llenando el vector con la semilla en bits-
@@ -430,4 +439,49 @@ NTL::ZZ findRoot(NTL::ZZ p){
 		}
 	}
 	return g;
+}
+
+/* Building an Image*/
+
+string getRGB(cv::Mat img){
+	cv::Vec3b colors;
+	string ret, temp;
+	long color, hund;
+	for(int y = 0; y < img.rows; y++){
+		for (int x = 0; x < img.cols; x++){
+			colors = img.at<cv::Vec3b>(cv::Point(x,y));
+			for (int i = 0; i < 3; i++){
+				color = int(colors[i]);
+				hund = 100;
+				if (color == 0){
+					ret += "000";
+					continue;
+				}
+				while (color < hund){
+					ret += "0";
+					hund /= 10;
+				}
+				temp = zToString(NTL::to_ZZ(color));
+				ret += temp;
+			}
+		}
+	}
+	return ret;
+}
+
+void getImg(string RGB, cv::Mat &result){
+	int col, i = 0;
+	string temp;
+	for(int y = 0; y < 32; y++){
+		for(int x = 0; x < 32; x++){
+			cv::Vec3b color;
+			for(int j = 0; j < 3; j++, i+=3){
+				temp.clear();
+				temp = RGB.substr(i, 3);
+				col = NTL::to_long(stringToZZ(temp));
+				color[j] = col;
+			}
+			result.at<cv::Vec3b>(cv::Point(x,y)) = color;
+		}
+	}
 }
