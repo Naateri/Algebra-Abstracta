@@ -320,6 +320,13 @@ string zToString(const NTL::ZZ &z) {
 	return leString.str();
 }
 
+NTL::ZZ stringToZZ(string a){
+	NTL::ZZ ret;
+	stringstream convi(a);
+	convi >> ret;
+	return ret;
+}
+
 /*
 Generador de aleatorios*/
 
@@ -376,55 +383,60 @@ NTL::ZZ ga(int tamTotal, int seedSize, int parts, int v){
 NTL::ZZ DES(NTL::ZZ num){
 	vector<bool> binary, perm1, perm2, c0, d0, hola, res;
 	long seed;
-	int i, j;
+	int i, j, k, l;
 	NTL::ZZ result;
-	for(j = 1; j <= 16; j++){
-		seed = time(NULL) + (j*7);
-		for (i = 0; i < 64; i++){ //llenando el vector con la semilla en bits-
-			if ((seed & 1) == 1){
+	//seed = rdtsc();
+	num = ga(1024, 512, 1, 1);
+	for (l = 0; l < 1024; l+=64){//llenando el vector con la semilla en bits
+		binary.clear();
+		for(j = 0; j < 64; j++){ ///guardando el numero en vector binary
+			if ((num & 1) == 1){
 				binary.push_back(1);
 			} else binary.push_back(0);
-			seed >>= 1;
+			num >>= 1;
 		}
-		for(i = 0; i < 56; i++){
-			perm1.push_back(binary.at(pc1[i]-1));
+		for(k = 1; k <= 16; k++){
+			for(i = 0; i < 56; i++){
+				perm1.push_back(binary.at(pc1[i]-1));
+			}
+			for(i = 0; i < 28; i++){
+				c0.push_back(perm1.at(i));
+			}
+			for(i; i < 56; i++){
+				d0.push_back(perm1.at(i));
+			}
+			if( (k>=3 && k<=8) || (k>=10 && k<=15)){
+				leftShift(c0, 1);
+				rightShift(d0, 1);
+				leftShift(c0, 1);
+				rightShift(d0, 1);
+			} else {
+				leftShift(c0, 1);
+				rightShift(d0, 1);
+			}
+			for(i = 0; i < 28; i++){
+				hola.push_back(c0.at(i));
+			}
+			for(i; i < 56; i++){
+				hola.push_back(d0.at(i-28));
+			}
+			for(i = 0; i < 48; i++){
+				perm2.push_back(hola.at(pc2[i]-1));
+				//res.push_back(perm2.at(i)); ///guardando los K's aqui
+			}
+			binary = perm2;
+			perm2.clear();
+			c0.clear();
+			d0.clear();
+			perm1.clear();
+			hola.clear();
 		}
-		for(i = 0; i < 28; i++){
-			c0.push_back(perm1.at(i));
-		}
-		for(i; i < 56; i++){
-			d0.push_back(perm1.at(i));
-		}
-		if( (j>=3 && j<=8) || (j>=10 && j<=15)){
-			leftShift(c0, 1);
-			rightShift(d0, 1);
-			leftShift(c0, 1);
-			rightShift(d0, 1);
-		} else {
-			leftShift(c0, 1);
-			rightShift(d0, 1);
-		}
-		for(i = 0; i < 28; i++){
-			hola.push_back(c0.at(i));
-		}
-		for(i; i < 56; i++){
-			hola.push_back(d0.at(i-28));
-		}
-		for(i = 0; i < 48; i++){
-			perm2.push_back(hola.at(pc2[i]-1));
-			res.push_back(perm2.at(i)); ///guardando los K's aqui
-		}
-		perm2.clear();
-		c0.clear();
-		d0.clear();
-		perm1.clear();
-		binary.clear();
-		hola.clear();
+		for(i = 0; i < 48; i++)
+			res.push_back(binary.at(i)); ///guardando los K's aqui
 	}
 	result = getBase10(res);
 	return result;
 }
-
 
 /* PRIMITIVE ROOT*/
 

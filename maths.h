@@ -30,6 +30,7 @@ NTL::ZZ modExponentiation2(NTL::ZZ a, NTL::ZZ b, NTL::ZZ n, int k); //k = numero
 vector<NTL::ZZ> ecuModulo(NTL::ZZ a, NTL::ZZ b, NTL::ZZ n); //ax === b mod n
 NTL::ZZ TCR(vector<NTL::ZZ> a, vector<NTL::ZZ> b, vector<NTL::ZZ> n);
 std::string zToString(const NTL::ZZ &z);
+NTL::ZZ stringToZZ(std::string a)
 //GENERADOR DE ALEATORIOS
 int rdtsc();
 NTL::ZZ getBase10(std::vector<bool> binary);
