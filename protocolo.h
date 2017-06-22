@@ -15,7 +15,11 @@ private:
 	NTL::ZZ d;
 	NTL::ZZ a;
 	std::string alfabeto = "abcdefghijklmnñopqrstuvwxyz ABCDEFGHIJKLMNÑOPQRSTUVWXYZ0123456789.,;:-_()@{}+/";
+	//std::string firmarImagen(cv::Mat);
+	//std::string descifrarImagen(std::string img);
 	public:
+	std::string firmarImagen(cv::Mat);
+	std::string descifrarImagen(std::string img);
 	Protocolo(int bits);
 	std::string cifrar(std::string msj); //, std::string fm);
 	std::string descifra_mensaje(std::string c);
