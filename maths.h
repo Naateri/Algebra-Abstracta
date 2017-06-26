@@ -43,4 +43,10 @@ NTL::ZZ findRoot(NTL::ZZ p);
 /*BUILDING IMAGE*/
 std::string getRGB(cv::Mat img);
 void getImg(std::string RGB, cv::Mat &result);
+/* TEORIA DE LA
+CODIFICACION */
+std::string bitDeParidad(std::string msj);
+void checkingParidad(std::string msj);
+std::string tripleRepeticion(std::string msj);
+std::string checking3R(std::string triple);
 #endif

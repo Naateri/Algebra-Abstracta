@@ -497,3 +497,49 @@ void getImg(string RGB, cv::Mat &result){
 		}
 	}
 }
+
+/* TEORIA DE LA
+CODIFICACION */
+
+string bitDeParidad(string msj){
+	long ones = 0;
+	for(int i = 0; i < msj.size(); i++){
+		if (msj[i] == 1) ones++;
+	}
+	if (ones & 1 == 1) msj += "1";
+	else msj += "0";
+	return msj;
+}
+
+void checkingParidad(string msj){
+	long ones = 0;
+	for (int i = 0; i < msj.size() - 1; i++){
+		if (msj[i] == 1) ones++;
+	}
+	if (((ones&1 == 1) && msj[i] == 1) || ((ones&&1 == 0) && (msj[i] == 0)))
+		cout << "Mensaje no recibido correctamente.\n";
+	else cout << "Mensaje recibido correctamente\n";
+}
+
+string tripleRepeticion(string msj){
+	for(int i = 0; i < 3; i++){
+		msj += msj;
+	}
+	return msj;
+}
+
+string checking3R(string triple){
+	string msj;
+	for(int i = 0; i < (triple.size() / 3); i++){
+		long ones = 0, zeros = 0;
+		if(triple[i] == "1") ones++;
+		else zeros++;
+		if(triple[i+(triple.size()>>1)] == "1") ones++;
+		else zeros++;
+		if(triple[i+(triple.size()/3] == "1") ones++;
+		else zeros++;
+		if(ones > zeros) msj += "1";
+		else msj += "0";
+	}
+	return msj;
+}
