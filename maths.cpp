@@ -384,20 +384,20 @@ NTL::ZZ DES(NTL::ZZ num){
 	vector<bool> binary, perm1, perm2, c0, d0, hola, res;
 	long seed;
 	int i, j, k, l;
-	NTL::ZZ result;
+	NTL::ZZ result, num;
 	//seed = rdtsc();
-	num = ga(1024, 512, 1, 1);
-	for (l = 0; l < 1024; l+=64){//llenando el vector con la semilla en bits
-		binary.clear();
-		for(j = 0; j < 64; j++){ ///guardando el numero en vector binary
-			if ((num & 1) == 1){
-				binary.push_back(1);
-			} else binary.push_back(0);
-			num >>= 1;
-		}
-		for(k = 1; k <= 16; k++){
+	num = ga(bits, bits>>1, 1, 1);
+	for (l = 0; l < bits; l++){//llenando el vector con la semilla en bits
+		if ((num & 1) == 1){
+			binary.push_back(1);
+		} else binary.push_back(0);
+		num >>= 1;
+	}
+	for(k = 1; k <= 16; k++){
+		for(l = 0; l < bits; l+=64){
+			vector<bool>temp(binary.begin() + l, binary.begin()+(l + 64));
 			for(i = 0; i < 56; i++){
-				perm1.push_back(binary.at(pc1[i]-1));
+				perm1.push_back(temp.at(pc1[i]-1));
 			}
 			for(i = 0; i < 28; i++){
 				c0.push_back(perm1.at(i));
@@ -422,19 +422,23 @@ NTL::ZZ DES(NTL::ZZ num){
 			}
 			for(i = 0; i < 48; i++){
 				perm2.push_back(hola.at(pc2[i]-1));
-				//res.push_back(perm2.at(i)); ///guardando los K's aqui
+				res.push_back(temp.at(i)); ///guardando los K's aqui
 			}
-			binary = perm2;
+			//binary = perm2;
 			perm2.clear();
 			c0.clear();
 			d0.clear();
 			perm1.clear();
 			hola.clear();
 		}
-		for(i = 0; i < 48; i++)
-			res.push_back(binary.at(i)); ///guardando los K's aqui
+		res.at((48*16)-1) = 1;
+		result = getBase10(res);
+		if (NTL::ProbPrime(result, 1))
+			return result;
+		res.clear();
 	}
-	result = getBase10(res);
+	//result = getBase10(res);
+	//return DES(bits);
 	return result;
 }
 
@@ -504,7 +508,7 @@ CODIFICACION */
 string bitDeParidad(string msj){
 	long ones = 0;
 	for(int i = 0; i < msj.size(); i++){
-		if (msj[i] == 1) ones++;
+		if (msj[i] == '1') ones++;
 	}
 	if (ones & 1 == 1) msj += "1";
 	else msj += "0";
@@ -513,10 +517,11 @@ string bitDeParidad(string msj){
 
 void checkingParidad(string msj){
 	long ones = 0;
-	for (int i = 0; i < msj.size() - 1; i++){
-		if (msj[i] == 1) ones++;
+	int i;
+	for (i = 0; i < msj.size() - 1; i++){
+		if (msj[i] == '1') ones++;
 	}
-	if (((ones&1 == 1) && msj[i] == 1) || ((ones&&1 == 0) && (msj[i] == 0)))
+	if ((((ones&1) == 1) && msj[i] == '1') || (((ones&1) == 0) && (msj[i] == '0')))
 		cout << "Mensaje no recibido correctamente.\n";
 	else cout << "Mensaje recibido correctamente\n";
 }
@@ -532,11 +537,11 @@ string checking3R(string triple){
 	string msj;
 	for(int i = 0; i < (triple.size() / 3); i++){
 		long ones = 0, zeros = 0;
-		if(triple[i] == "1") ones++;
+		if(triple[i] == '1') ones++;
 		else zeros++;
-		if(triple[i+(triple.size()>>1)] == "1") ones++;
+		if(triple[i+(triple.size()>>1)] == '1') ones++;
 		else zeros++;
-		if(triple[i+(triple.size()/3] == "1") ones++;
+		if(triple[i+(triple.size()/3)] == '1') ones++;
 		else zeros++;
 		if(ones > zeros) msj += "1";
 		else msj += "0";
