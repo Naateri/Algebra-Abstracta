@@ -380,20 +380,19 @@ NTL::ZZ ga(int tamTotal, int seedSize, int parts, int v){
 	return result;
 }
 
-NTL::ZZ DES(NTL::ZZ num){
+NTL::ZZ DES(int bits){
 	vector<bool> binary, perm1, perm2, c0, d0, hola, res;
-	long seed;
 	int i, j, k, l;
 	NTL::ZZ result, num;
-	//seed = rdtsc();
-	num = ga(bits, bits>>1, 1, 1);
-	for (l = 0; l < bits; l++){//llenando el vector con la semilla en bits
-		if ((num & 1) == 1){
-			binary.push_back(1);
-		} else binary.push_back(0);
-		num >>= 1;
-	}
 	for(k = 1; k <= 16; k++){
+		binary.clear();
+		num = ga(bits, bits>>1, 1, 1);
+		for (l = 0; l < bits; l++){//llenando el vector con la semilla en bits
+			if ((num & 1) == 1){
+				binary.push_back(1);
+			} else binary.push_back(0);
+			num >>= 1;
+		}
 		for(l = 0; l < bits; l+=64){
 			vector<bool>temp(binary.begin() + l, binary.begin()+(l + 64));
 			for(i = 0; i < 56; i++){
@@ -401,9 +400,7 @@ NTL::ZZ DES(NTL::ZZ num){
 			}
 			for(i = 0; i < 28; i++){
 				c0.push_back(perm1.at(i));
-			}
-			for(i; i < 56; i++){
-				d0.push_back(perm1.at(i));
+				d0.push_back(perm1.at(i+28));
 			}
 			if( (k>=3 && k<=8) || (k>=10 && k<=15)){
 				leftShift(c0, 1);
@@ -422,7 +419,7 @@ NTL::ZZ DES(NTL::ZZ num){
 			}
 			for(i = 0; i < 48; i++){
 				perm2.push_back(hola.at(pc2[i]-1));
-				res.push_back(temp.at(i)); ///guardando los K's aqui
+				res.push_back(perm2.at(i)); ///guardando los K's aqui
 			}
 			//binary = perm2;
 			perm2.clear();
@@ -437,9 +434,7 @@ NTL::ZZ DES(NTL::ZZ num){
 			return result;
 		res.clear();
 	}
-	//result = getBase10(res);
-	//return DES(bits);
-	return result;
+	return DES(bits);
 }
 
 /* PRIMITIVE ROOT*/
