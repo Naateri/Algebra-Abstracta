@@ -54,35 +54,20 @@ string Protocolo::descifrarImagen(string img){
 
 Protocolo::Protocolo(int bits){
 	NTL::ZZ phi;
-	//do{
-	this->myQ = ga(bits, bits>>1, 1, 1);
-	//cout << "Q: " << this->myQ << endl;
-	//}while(PrimalityTest(this->myQ, 1) == false);
-	this->myQ = NTL::NextPrime(this->myQ, 1);
-	//this->myQ = MyNextPrime(this->myQ, 1);
-	do{
-		//this->myG = ga(bits, bits>>1, 1, 1);
-		this->myG = findRoot(this->myQ);
-	}while(this->myG > this->myQ);
-	//do{
-	this->p_1 = ga(bits, bits>>1, 1, 1);
-	//}while(PrimalityTest(this->p_1, 1) == false);
-	this->p_1 = NTL::NextPrime(this->p_1, 1);
-	//this->p_1 = MyNextPrime(this->p_1, 1);
-	//do{
-	this->p_2 = ga(bits, bits>>1, 1, 1);
-	//}while(PrimalityTest(this->p_2, 1) == false);
-	this->p_2 = NTL::NextPrime(this->p_2, 1);
-	//this->p_2 = MyNextPrime(this->p_2, 1);
+	this->myQ = DES(bits);
+	this->myQ = (this->myQ<<1) + 1;
+	this->myG = findRoot(this->myQ);
+	this->p_1 = DES(bits);
+	this->p_2 = DES(bits);
 	this->myN = this->p_1 * this->p_2;
 	phi = (this->p_1 - 1) * (this->p_2 - 1);
 	do{
-		this->myE = ga(bits, bits>>1, 1, 1);
+		this->myE = ga(bits>>1, bits>>2, 1, 1);
 	}while(mcdNTL(this->myE, phi) != 1); ///e siempre va a ser mayor que 1
 	this->d = inversaNTL(this->myE, phi);
 	do{
-		this->a = ga(bits, bits>>1, 1, 1); ///aleatorio para cifrar
-	}while(this->a > this->myQ);
+		this->a = ga(bits>>2, bits>>4, 1, 1); ///aleatorio para cifrar
+	}while(this->a >= (this->myQ - 2));
 	cout << "Claves generadas.\n";
 }
 
@@ -106,16 +91,18 @@ string Protocolo::cifrar(string msj){
 	}
 	modd = modulo(original.size(), k);
 	while(modd != 0){ ///agrega "26" (espacio) mientras la long del texto
-		original += "26"; ///en numeros no sea divisible entre la long de N
+		original += "26"; ///en numeros no sea divisible entre la long de N-1
 		modd = modulo(original.size(), k);
 	}
+	cout << "original: " << original << endl;
 	ten = potenciacion(NTL::to_ZZ(10), NTL::to_ZZ(k)); ///10^(k) para saber si result tiene tantos digitos como k
 	for(i = 0; i < original.size(); i+=k){
 		tmp.clear();
 		ten2 = ten;
 		tmp = original.substr(i, k);
 		temp = stringToZZ(tmp);
-		result = ntlModulo((ka * temp), this->myQ);
+		cout << "temp: " << temp << endl;
+		result = ntlModulo((temp * ka), this->q);
 		while (result  < ten2){ ///si result es menor a 10^k, se le agrega 0 y se divide entre 10 a 10^k (10^{k-1})
 			c += "0";
 			ten2 /= 10;
@@ -129,44 +116,42 @@ string Protocolo::cifrar(string msj){
 		c0 += "0";
 		k++;
 	}
-	c0 += ca;
-	c += c0;
-	return c;
+	c0 += ca; ///c0 guarda el ca
+	c0 += c;
+	return c0;
 }
 
 string Protocolo::descifra_mensaje(string c){
 	long alfL = this->alfabeto.size();
-	string leng = zToString(this->N), d, ret, tmp, ca, alfLeng = zToString(NTL::to_ZZ(alfL));
+	string leng = zToString(this->myN), desi, ret, tmp, ca, alfLeng = zToString(NTL::to_ZZ(alfL));
 	long k = leng.size(), lengAlf = alfLeng.size(); ///P Digitos
 	long i, found;
 	NTL::ZZ result, temp, ten, ten2, invKM, A, caN, ka;
-	//ca(c.begin() + c.size()-this->N, this->N);
-	ca = c.substr(c.size()-k, k);
-	leng = zToString(this->q);
-	k = leng.size();
+	ca = c.substr(0, k);
 	caN = stringToZZ(ca);
-	A = modExponentiation1(caN, this->d, this->N);
-	ka = modExponentiation1(this->g, A, this->q);
-	invKM = inversaNTL(ka, this->q);
+	A = modExponentiation1(caN, this->d, this->myN);
+	ka = modExponentiation1(this->myG, A, this->myQ);
+	invKM = inversaNTL(ka, this->myQ);
+	i = k;
+	leng = zToString(this->myQ);
+	k = leng.size();
 	ten = potenciacion(NTL::to_ZZ(10), k-NTL::to_ZZ(2)); ///10^{N-2} para ver si el numero es menor a eso
-	for(i = 0; i < (c.size() - k); i+=k){
+	for(i; i < c.size(); i+=k){
 		tmp.clear(); ///borrando datos del string
 		ten2 = ten;
 		tmp = c.substr(i, k);
 		temp = stringToZZ(tmp);
-		result = ntlModulo((temp * invKM), this->q);
-		cout << "Result: " << result << endl;
-		ostringstream conv;
-		conv << result;
+		cout << "temp (des) " << temp << endl;
+		result = ntlModulo((temp * invKM), this->myQ);
 		while (result < ten2){ ///guardando en bloques N-1
-			d += "0";
+			desi += "0";
 			ten2 /= 10;
 		}
-		d += conv.str();
+		desi += zToString(result);
 	}
-	for(i = 0; i < d.size(); i+=lengAlf){
+	for(i = 0; i < desi.size(); i+=lengAlf){
 		tmp.clear();
-		tmp = d.substr(i, lengAlf);
+		tmp = desi.substr(i, lengAlf);
 		found = NTL::to_long(stringToZZ(tmp));
 		ret += this->alfabeto[found];
 	}
