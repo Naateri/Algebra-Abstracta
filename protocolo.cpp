@@ -12,20 +12,46 @@
 using namespace std;
 
 string Protocolo::firmarImagen(cv::Mat a){
-	string RGB, lengMyN = zToString(this->myN), lengN = zToString(this->N), temp, ret;
-	long MyNLength = lengMyN.size(), NLength = lengN.size(), i;
+	string RGB, lengMyQ = zToString(this->q), lengN = zToString(this->N), lengMyN = zToString(this->myN), temp, ret, ret2;
+	if (lengN.size() == lengMyN.size()) cout << "Iguales pe\n";
+	long MyQLength = lengMyQ.size() - 1, NLength = lengN.size() - 1, i, modd;
 	NTL::ZZ rub, tmp, firma, ten, ten2;
 	ten = potenciacion(NTL::to_ZZ(10), NTL::to_ZZ(NLength));
 	RGB = getRGB(a);
 	cout << "Original: " << RGB << endl;
+	modd = modulo(RGB.size(), NLength);
+	while (modd != 0){
+		RGB = "0" + RGB;
+		modd = modulo(RGB.size(), NLength);
+	}
+	//cout << "New original: " << RGB << endl;
 	for(i = 0; i < RGB.size(); i+=NLength){
-		if (i+NLength > RGB.size()){
-			temp = RGB.substr(i, (RGB.size()- (i)));
-		} else {
-			temp = RGB.substr(i, NLength);
-		}
+		cout << "Iter " << i << endl;
+		/*if (i+NLength > RGB.size()){
+		temp = RGB.substr(i, (RGB.size()- (i)));
+		} else {*/
+		temp = RGB.substr(i, NLength);
+		//}
 		tmp = stringToZZ(temp);
 		rub = modExponentiation1(tmp, this->d, this->myN);
+		/*if (rub > this->N){
+		temp = zToString(rub);
+		modd = modulo(temp.size(), NLength);
+		while (modd != 0){
+		temp = "0" + temp;
+		modd = modulo(temp.size(), NLength);
+		}
+		for(int j = 0; j < temp.size(); j+=NLength){
+		tmp = stringToZZ(temp.substr(j, NLength));
+		firma = modExponentiation1(tmp, this->e, this->N);
+		ten2 = ten;
+		while(firma < ten2){ ///metiendo 0's para que el nro de digitos sea igual al tam de N-rec
+		ret += "0";
+		ten2 /= 10;
+		}
+		ret += zToString(firma);
+		}
+		} else {*/
 		firma = modExponentiation1(rub, this->e, this->N); ///claves publicas del receptor
 		ten2 = ten;
 		while(firma < ten2){ ///metiendo 0's para que el nro de digitos sea igual al tam de N-rec
@@ -33,23 +59,32 @@ string Protocolo::firmarImagen(cv::Mat a){
 			ten2 /= 10;
 		}
 		ret += zToString(firma);
+		//}
 	}
 	return ret;
 }
 
 string Protocolo::descifrarImagen(string img){
-	string RGB, lengMyN = zToString(this->myN), lengN = zToString(this->N), temp, ret;
-	long MyNLength = lengMyN.size(), NLength = lengN.size(), i, x, y;
+	string RGB, lengMyN = zToString(this->myN), lengQ = zToString(this->N), temp, ret, ret2;
+	long MyNLength = lengMyN.size(), QLength = lengQ.size(), i;
 	NTL::ZZ F, tmp, R, ten, ten2;
-	ten = potenciacion(NTL::to_ZZ(10), NTL::to_ZZ(MyNLength));
+	ten = potenciacion(NTL::to_ZZ(10), MyNLength-NTL::to_ZZ(2));
+	//i = img.size() - 9216;
 	for(i = 0; i < img.size(); i+=MyNLength){
+		cout << "iter: " << i << endl;
 		temp = img.substr(i, MyNLength);
 		tmp = stringToZZ(temp);
 		F = modExponentiation1(tmp, this->d, this->myN);
 		R = modExponentiation1(F, this->e, this->N);
+		ten2 = ten;
+		while(R < ten2){
+			ret += "0";
+			ten2 /= 10;
+		}
 		ret += zToString(R);
 	}
 	return ret;
+	//return ret.substr(img.size() - 9216,9216);
 }
 
 Protocolo::Protocolo(int bits){
@@ -141,7 +176,6 @@ string Protocolo::descifra_mensaje(string c){
 		ten2 = ten;
 		tmp = c.substr(i, k);
 		temp = stringToZZ(tmp);
-		cout << "temp (des) " << temp << endl;
 		result = ntlModulo((temp * invKM), this->myQ);
 		while (result < ten2){ ///guardando en bloques N-1
 			desi += "0";
